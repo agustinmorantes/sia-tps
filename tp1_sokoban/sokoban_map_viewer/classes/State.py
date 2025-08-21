@@ -26,7 +26,7 @@ class State:
     
     def get_children(self):
         children = []
-        for direction in Direction:
+        for direction in [Direction.LEFT, Direction.UP, Direction.RIGHT, Direction.DOWN]:
             if self.can_move(direction):
                 children.append(self.move(direction))
         return children

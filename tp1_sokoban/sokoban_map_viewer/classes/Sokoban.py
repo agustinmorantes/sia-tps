@@ -10,5 +10,10 @@ class SokobanManager:
     def _initialize(self, board, goals, player, boxes):
         self.board = board
         self.goals = goals
-        self.player = player
-        self.boxes = boxes
+        self.visited_nodes = set()
+        self.winning_path = deque()
+        self.border_nodes_count = 0
+        self.start_time = 0
+
+    
+    
