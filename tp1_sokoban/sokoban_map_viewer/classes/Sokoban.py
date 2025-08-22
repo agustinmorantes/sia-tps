@@ -32,6 +32,48 @@ class SokobanManager:
         self.execution_time = 0
         self.start_time = 0
         self.root_node = Node(self.initial_state())
+    
+    def reconstruct_path(self, node: Node):
+        path = []
+        while node:
+            path.append(node.state)
+            node = node.parent
+        return path[::-1]
+
+    def bfs(self):
+        self.reset()
+        self.start_time = time.time()
+        queue = deque([self.root_node])
+        self.visited_nodes.add(self.root_node)
+
+        while queue:
+            current_node = queue.popleft()
+            self.nodes_expanded += 1
+            
+            if current_node.state.is_solved():
+                self.winning_path = self.reconstruct_path(current_node)
+                self.solution_cost = len(self.winning_path) - 1;
+                self.execution_time = time.time() - self.start_time
+                return self.winning_path
+            
+            for child_node in current_node.get_children():
+                if child_node not in self.visited_nodes:
+                    self.visited_nodes.add(child_node)
+                    queue.append(child_node)
+            
+            self.border_nodes_count = max(self.border_nodes_count, len(queue))
+            
+        self.execution_time = time.time() - self.start_time
+        return None
+
+    def dfs(self):
+        return None
+    
+    def greedy(self):
+        return None
+    
+    def a_star(self):
+        return None
 
     def get_statistics(self):
         return {
