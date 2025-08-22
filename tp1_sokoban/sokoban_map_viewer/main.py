@@ -3,6 +3,8 @@ from collections import deque
 from classes.Point import Point
 from classes.Sokoban import SokobanManager
 from map_parser import load_and_parse_map
+from map_viewer import SokobanMapViewer
+import arcade
 
 def main():
     maps_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "maps")
@@ -31,6 +33,8 @@ def main():
         print("Nodos expandidos:", sokoban.nodes_expanded)
         print("Border nodes máximo:", sokoban.border_nodes_count)
         print("Tiempo de ejecución (s):", sokoban.execution_time)
+        game = SokobanMapViewer(map_file, solution_path)
+        arcade.run()
     else:
         print("No se encontró solución.")
 
