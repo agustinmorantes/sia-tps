@@ -19,7 +19,7 @@ class Node:
         return self.state
     
     # Ver de obtener los hijos en forma ordenadan respecto a las direcciones
-    # por ejemplo siemrpe guardar UP DOWN LEFT RIGHT, pero probar con otros ordenes
+    # por ejemplo siempre guardar UP DOWN LEFT RIGHT, pero probar con otros ordenes
     def get_children(self):
         if not self.children:
             for child_state in self.state.get_children():

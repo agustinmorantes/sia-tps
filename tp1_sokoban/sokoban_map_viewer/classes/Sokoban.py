@@ -1,3 +1,5 @@
+from collections import deque
+
 class SokobanManager:
     _instance = None
     
