@@ -1,5 +1,5 @@
-from Point import Point
-from Direction import Direction
+from classes.Point import Point
+from classes.Direction import Direction
 
 class State:
     def __init__(self, player: Point, boxes: set[Point], walls: set[Point], goals: set[Point], deadlocks: set[Point]):
@@ -59,3 +59,21 @@ class State:
             if self.can_move(direction):
                 children.append(self.move(direction))
         return children
+
+    def __str__(self):
+        result = ""
+        for row in range(len(self.board_rows)):
+            for col in range(len(self.board_cols)):
+                p = Point(row, col)
+                if p == self.player:
+                    result += "@"
+                elif p in self.boxes:
+                    result += "$"
+                elif p in self.goals:
+                    result += "."
+                elif p in self.walls:
+                    result += "#"
+                else:
+                    result += " "
+            result += "\n"
+        return result

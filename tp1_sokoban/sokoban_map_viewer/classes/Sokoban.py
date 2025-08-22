@@ -1,6 +1,9 @@
 from collections import deque
-from Node import Node
-from State import State
+from classes.Node import Node
+from classes.State import State
+from classes.Point import Point
+from classes.Direction import Direction
+import time
 
 class SokobanManager:
     _instance = None
@@ -41,7 +44,6 @@ class SokobanManager:
         return path[::-1]
 
     def bfs(self):
-        self.reset()
         self.start_time = time.time()
         queue = deque([self.root_node])
         self.visited_nodes.add(self.root_node)

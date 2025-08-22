@@ -1,4 +1,4 @@
-from State import State
+from classes.State import State
 
 class Node:
     def __init__(self, state: State, parent=None):
