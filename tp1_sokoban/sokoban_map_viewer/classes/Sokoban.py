@@ -32,5 +32,11 @@ class SokobanManager:
         self.execution_time = 0
         self.start_time = 0
         self.root_node = Node(self.initial_state())
-    
-    
+
+    def get_statistics(self):
+        return {
+            "nodes_expanded": self.nodes_expanded,
+            "solution_cost": self.solution_cost,
+            "border_nodes_count": self.border_nodes_count,
+            "execution_time": self.execution_time
+        }
