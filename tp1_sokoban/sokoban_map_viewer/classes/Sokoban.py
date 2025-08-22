@@ -23,5 +23,14 @@ class SokobanManager:
         self.start_time = 0
         self.heuristics = {}
 
+    def reset(self):
+        self.visited_nodes.clear()
+        self.winning_path.clear()
+        self.border_nodes_count = 0
+        self.nodes_expanded = 0
+        self.solution_cost = 0
+        self.execution_time = 0
+        self.start_time = 0
+        self.root_node = Node(self.initial_state())
     
     
