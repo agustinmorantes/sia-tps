@@ -10,10 +10,10 @@ class State:
         self.deadlocks = deadlocks   # Deadlocks positions
 
     def __eq__(self, other):
-        return self.player == other.player and self.boxes == other.boxes    # Walls, goals and deadlocks not relevant for equality
+        return self.player == other.player and self.boxes == other.boxes 
     
     def __hash__(self):
-        return hash((tuple(self.boxes), self.player))   # Same as before
+        return hash((tuple(self.boxes), self.player))
     
     def is_solved(self):
         return self.boxes.issubset(self.goals)
@@ -21,23 +21,16 @@ class State:
     def can_move(self, direction: Direction) -> bool:
         new_player = self.player.move(direction)
 
-        # 1️⃣ No se puede mover a una pared
         if new_player in self.walls:
             return False
 
-        # 2️⃣ Si hay caja en la dirección
         if new_player in self.boxes:
             new_box = new_player.move(direction)
-            
-            # La caja no puede chocar con pared o con otra caja
             if new_box in self.walls or new_box in self.boxes:
                 return False
-            
-            # La caja no puede ir a deadlock (si no es un goal)
             if new_box in self.deadlocks and new_box not in self.goals:
                 return False
 
-        # 3️⃣ Si no hay obstáculos, se puede mover
         return True
 
     
