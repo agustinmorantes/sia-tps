@@ -26,8 +26,8 @@ def main():
     if solution_path:
         print(f"Solución encontrada en {len(solution_path)-1} movimientos!")
         print("Estados del camino:")
-        # for state in solution_path:
-        #     print(state)  # Podés definir __str__ en State para mostrar más claro
+        for state in solution_path:
+            print(state)  # Podés definir __str__ en State para mostrar más claro
         print("Nodos expandidos:", sokoban.nodes_expanded)
         print("Border nodes máximo:", sokoban.border_nodes_count)
         print("Tiempo de ejecución (s):", sokoban.execution_time)

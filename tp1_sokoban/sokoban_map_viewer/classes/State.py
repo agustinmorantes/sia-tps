@@ -61,14 +61,20 @@ class State:
         return children
 
     def __str__(self):
+        max_row = max(p.x for p in self.walls | self.goals | self.boxes | {self.player}) + 1
+        max_col = max(p.y for p in self.walls | self.goals | self.boxes | {self.player}) + 1
+
         result = ""
-        for row in range(len(self.board_rows)):
-            for col in range(len(self.board_cols)):
-                p = Point(row, col)
+        for r in range(max_row):
+            for c in range(max_col):
+                p = Point(r, c)
                 if p == self.player:
                     result += "@"
                 elif p in self.boxes:
-                    result += "$"
+                    if p in self.goals:
+                        result += "*"  # Caja sobre goal
+                    else:
+                        result += "$"
                 elif p in self.goals:
                     result += "."
                 elif p in self.walls:
