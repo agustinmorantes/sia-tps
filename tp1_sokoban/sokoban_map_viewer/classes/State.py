@@ -1,13 +1,14 @@
-from classes.Point import Point
-from classes.Direction import Direction
+from sokoban_map_viewer.classes.Direction import Direction
+from sokoban_map_viewer.classes.Point import Point
+
 
 class State:
     def __init__(self, player: Point, boxes: set[Point], walls: set[Point], goals: set[Point], deadlocks: set[Point]):
-        self.player = player         # Player position
-        self.boxes = boxes           # Boxes positions
-        self.walls = walls           # Walls positions
-        self.goals = goals           # Goals positions
-        self.deadlocks = deadlocks   # Deadlocks positions
+        self.player: Point = player         # Player position
+        self.boxes: set[Point] = boxes           # Boxes positions
+        self.walls: set[Point] = walls           # Walls positions
+        self.goals: set[Point] = goals           # Goals positions
+        self.deadlocks: set[Point] = deadlocks   # Deadlocks positions
 
     def __eq__(self, other):
         return self.player == other.player and self.boxes == other.boxes 

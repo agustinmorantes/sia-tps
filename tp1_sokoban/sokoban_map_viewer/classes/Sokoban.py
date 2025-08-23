@@ -1,13 +1,16 @@
+import itertools
 from collections import deque
-from classes.Node import Node
-from classes.State import State
-from classes.Point import Point
-from classes.Direction import Direction
 import time
+import heapq
+
+from sokoban_map_viewer.classes.Node import Node
+from sokoban_map_viewer.classes.State import State
+from sokoban_map_viewer.classes.heuristics.Heuristic import Heuristic
+
 
 class SokobanManager:
     _instance = None
-    
+
     def __new__(cls, board, goals, player, boxes, deadlocks=set()):
         if cls._instance is None:
             cls._instance = super(SokobanManager, cls).__new__(cls)
@@ -34,7 +37,7 @@ class SokobanManager:
         self.solution_cost = 0
         self.execution_time = 0
         self.start_time = 0
-        self.root_node = Node(self.initial_state())
+        self.root_node = Node(self.initial_state)
     
     def reconstruct_path(self, node: Node):
         path = []
@@ -54,7 +57,7 @@ class SokobanManager:
             
             if current_node.state.is_solved():
                 self.winning_path = self.reconstruct_path(current_node)
-                self.solution_cost = len(self.winning_path) - 1;
+                self.solution_cost = len(self.winning_path) - 1
                 self.execution_time = time.time() - self.start_time
                 return self.winning_path
             
@@ -69,12 +72,94 @@ class SokobanManager:
         return None
 
     def dfs(self):
+        self.start_time = time.time()
+        stack = deque([self.root_node])
+
+        while stack:
+            current_node = stack.pop()
+            self.nodes_expanded += 1
+            self.visited_nodes.add(current_node)
+
+            if current_node.state.is_solved():
+                self.winning_path = self.reconstruct_path(current_node)
+                self.solution_cost = len(self.winning_path) - 1
+                self.execution_time = time.time() - self.start_time
+                return self.winning_path
+
+            for child_node in current_node.get_children():
+                if child_node not in self.visited_nodes:
+                    stack.append(child_node)
+
+            self.border_nodes_count = max(self.border_nodes_count, len(stack))
+
+        self.execution_time = time.time() - self.start_time
+        return None
+
+    def greedy(self, heuristic: Heuristic):
+        self.start_time = time.time()
+
+        # Priority queue, ordered by heuristic value with tie-breaking using a counter
+        counter = itertools.count()
+        queue = [(heuristic(self.root_node.state), next(counter), self.root_node)]
+
+        self.visited_nodes = {self.root_node}
+
+        while queue:
+            # Get the node with the lowest heuristic value from priority queue
+            _, _, current_node = heapq.heappop(queue)
+            self.nodes_expanded += 1
+
+            if current_node.state.is_solved():
+                self.winning_path = self.reconstruct_path(current_node)
+                self.solution_cost = len(self.winning_path) - 1
+                self.execution_time = time.time() - self.start_time
+                return self.winning_path
+
+            for child_node in current_node.get_children():
+                if child_node not in self.visited_nodes:
+                    self.visited_nodes.add(child_node)
+                    heapq.heappush(queue, (heuristic(child_node.state), next(counter), child_node))
+
+            self.border_nodes_count = max(self.border_nodes_count, len(queue))
+
+        self.execution_time = time.time() - self.start_time
         return None
     
-    def greedy(self):
-        return None
-    
-    def a_star(self):
+    def a_star(self, heuristic: Heuristic):
+        self.start_time = time.time()
+
+        counter = itertools.count()
+        openQueue = [(heuristic(self.root_node.state), next(counter), self.root_node)]
+        openSet = {self.root_node}
+
+        gScore = {self.root_node: 0}
+        fScore = {self.root_node: heuristic(self.root_node.state)}
+
+        while openQueue:
+            _, _, current_node = heapq.heappop(openQueue)
+            openSet.remove(current_node)
+
+            if current_node.state.is_solved():
+                self.winning_path = self.reconstruct_path(current_node)
+                self.solution_cost = len(self.winning_path) - 1
+                self.execution_time = time.time() - self.start_time
+                return self.winning_path
+
+            for child_node in current_node.get_children():
+                tentative_gScore = gScore[current_node] + 1
+
+                if child_node not in gScore or tentative_gScore < gScore[child_node]:
+                    gScore[child_node] = tentative_gScore
+                    fScore[child_node] = tentative_gScore + heuristic(child_node.state)
+
+                    if child_node not in openSet:
+                        heapq.heappush(openQueue, (fScore[child_node], next(counter), child_node))
+                        openSet.add(child_node)
+
+            self.border_nodes_count = max(self.border_nodes_count, len(openQueue))
+            self.nodes_expanded += 1
+
+        self.execution_time = time.time() - self.start_time
         return None
 
     def get_statistics(self):

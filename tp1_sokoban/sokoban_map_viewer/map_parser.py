@@ -2,7 +2,9 @@ import os
 
 def load_and_parse_map(map_file_path):
     with open(map_file_path, "r") as f:
-        map_data = [list(line.strip()) for line in f.readlines()]
+        lines = [line.rstrip('\n') for line in f.readlines()]
+    max_length = max(len(line) for line in lines)
+    map_data = [list(line.ljust(max_length)) for line in lines]
 
     walls = [] 
     goals = []

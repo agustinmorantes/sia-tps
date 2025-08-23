@@ -1,4 +1,5 @@
 import os
+import sys
 from collections import deque
 from classes.Point import Point
 from classes.Sokoban import SokobanManager
@@ -6,9 +7,17 @@ from map_parser import load_and_parse_map
 from map_viewer import SokobanMapViewer
 import arcade
 
+from sokoban_map_viewer.classes.heuristics.ChebyshevHeuristic import ChebyshevHeuristic
+from sokoban_map_viewer.classes.heuristics.EuclideanHeuristic import EuclideanHeuristic
+from sokoban_map_viewer.classes.heuristics.HammingHeuristic import HammingHeuristic
+from sokoban_map_viewer.classes.heuristics.ManhattanHeuristic import ManhattanHeuristic
+from sokoban_map_viewer.classes.heuristics.ManhattanImprovedHeuristic import ManhattanImprovedHeuristic
+
+
 def main():
-    maps_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "maps")
-    map_file = os.path.join(maps_dir, "Map1.txt")  # Cambiar por tu mapa
+    map_file = os.path.join(f"{os.path.abspath(__file__)}","maps", "Map1.txt")
+    if len(sys.argv) > 1:
+        map_file = sys.argv[1]
 
     if not os.path.exists(map_file):
         print(f"Error: el archivo de mapa no se encontró en {map_file}")
@@ -23,13 +32,13 @@ def main():
 
     sokoban = SokobanManager(board=walls_points, goals=goals_points, player=player, boxes=boxes_points)
 
-    solution_path = sokoban.bfs()
+    solution_path = sokoban.a_star(HammingHeuristic())
 
     if solution_path:
         print(f"Solución encontrada en {len(solution_path)-1} movimientos!")
         print("Estados del camino:")
-        for state in solution_path:
-            print(state)  # Podés definir __str__ en State para mostrar más claro
+        # for state in solution_path:
+        #     print(state)  # Podés definir __str__ en State para mostrar más claro
         print("Nodos expandidos:", sokoban.nodes_expanded)
         print("Border nodes máximo:", sokoban.border_nodes_count)
         print("Tiempo de ejecución (s):", sokoban.execution_time)

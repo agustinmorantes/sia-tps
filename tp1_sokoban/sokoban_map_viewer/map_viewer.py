@@ -43,7 +43,7 @@ class SokobanMapViewer(arcade.Window):
         self.current_state = None
         if self.solution_path:
             self.current_state = self.solution_path[self.current_state_index]
-            arcade.schedule(self.update_game_state, 0.5)  # Update every 0.5 seconds
+            arcade.schedule(self.update_game_state, min(0.5, 10.0 / len(solution_path)))  # Update every 0.5 seconds or faster for long solutions
         
     def update_game_state(self, delta_time):
         if self.solution_path and self.current_state_index < len(self.solution_path) - 1:
