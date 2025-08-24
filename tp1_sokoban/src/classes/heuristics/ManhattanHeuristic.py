@@ -1,6 +1,7 @@
 from ..State import State
 from .Heuristic import Heuristic
 
+inf = float('inf')
 
 class ManhattanHeuristic(Heuristic):
     def __init__(self):
@@ -11,7 +12,7 @@ class ManhattanHeuristic(Heuristic):
         total_dist = 0
 
         for box in state.boxes:
-            min_dist = float('inf')
+            min_dist = inf
             for goal in state.goals:
                 dist = abs(box.x - goal.x) + abs(box.y - goal.y)
                 if dist < min_dist:

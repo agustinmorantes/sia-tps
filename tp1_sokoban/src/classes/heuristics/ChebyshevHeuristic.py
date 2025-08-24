@@ -1,5 +1,6 @@
 from .Heuristic import Heuristic
 
+inf = float('inf')
 
 class ChebyshevHeuristic(Heuristic):
     def __init__(self):
@@ -10,7 +11,7 @@ class ChebyshevHeuristic(Heuristic):
         total_dist = 0
 
         for box in state.boxes:
-            min_dist = float('inf')
+            min_dist = inf
             for goal in state.goals:
                 dist = max(abs(box.x - goal.x), abs(box.y - goal.y))
                 if dist < min_dist:

@@ -6,6 +6,8 @@ def load_and_parse_map(map_file_path):
     max_length = max(len(line) for line in lines)
     map_data = [list(line.ljust(max_length)) for line in lines]
 
+    size = (len(map_data[0]), len(map_data))
+
     walls = [] 
     goals = []
     boxes = []
@@ -28,4 +30,4 @@ def load_and_parse_map(map_file_path):
                     boxes.append([row , col])
                     goals.append([row, col]) 
 
-    return map_data, walls, goals, boxes, player_position
+    return map_data, walls, goals, boxes, player_position, size

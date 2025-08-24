@@ -4,6 +4,7 @@ import time
 import heapq
 
 from .Node import Node
+from .Point import Point
 from .State import State
 from .heuristics.Heuristic import Heuristic
 
@@ -11,14 +12,16 @@ from .heuristics.Heuristic import Heuristic
 class SokobanManager:
     _instance = None
 
-    def __new__(cls, board, goals, player, boxes, deadlocks=set()):
+    def __new__(cls, walls: set[Point], goals: set[Point], player: Point, boxes: set[Point], size: tuple[int, int]):
         if cls._instance is None:
             cls._instance = super(SokobanManager, cls).__new__(cls)
-            cls._instance._initialize(board, goals, player, boxes, deadlocks)
+            cls._instance._initialize(walls, goals, player, boxes, size)
         return cls._instance
 
-    def _initialize(self, board, goals, player, boxes, deadlocks):
-        self.initial_state = State(player, set(boxes), set(board), set(goals), set(deadlocks))
+    def _initialize(self, walls: set[Point], goals: set[Point], player: Point, boxes: set[Point], size: tuple[int, int]):
+        deadlocks = self._compute_deadlocks(walls, goals, size)
+
+        self.initial_state = State(player, boxes, walls, goals, deadlocks)
         self.root_node = Node(self.initial_state)
         self.visited_nodes = set()
         self.winning_path = deque()
@@ -28,6 +31,24 @@ class SokobanManager:
         self.execution_time = 0
         self.start_time = 0
         self.heuristics = {}
+
+    @staticmethod
+    def _compute_deadlocks(walls: set[Point], goals: set[Point], size: tuple[int,int]) -> set[Point]:
+        deadlocks = set()
+
+        x_size, y_size = size
+        for y in range(y_size):
+            for x in range(x_size):
+                p = Point(x, y)
+                if p in walls or p in goals: continue
+
+                if ((Point(x-1, y) in walls and Point(x, y-1) in walls)) or \
+                    ((Point(x+1, y) in walls and Point(x, y-1) in walls)) or \
+                    ((Point(x-1, y) in walls and Point(x, y+1) in walls)) or \
+                    ((Point(x+1, y) in walls and Point(x, y+1) in walls)):
+                        deadlocks.add(p)
+
+        return deadlocks
 
     def reset(self):
         self.visited_nodes.clear()
@@ -54,7 +75,7 @@ class SokobanManager:
         while queue:
             current_node = queue.popleft()
             self.nodes_expanded += 1
-            
+
             if current_node.state.is_solved():
                 self.winning_path = self.reconstruct_path(current_node)
                 self.solution_cost = len(self.winning_path) - 1
@@ -138,6 +159,7 @@ class SokobanManager:
         while openQueue:
             _, _, current_node = heapq.heappop(openQueue)
             openSet.remove(current_node)
+            self.visited_nodes.add(current_node)
 
             if current_node.state.is_solved():
                 self.winning_path = self.reconstruct_path(current_node)
@@ -146,6 +168,9 @@ class SokobanManager:
                 return self.winning_path
 
             for child_node in current_node.get_children():
+                if child_node in self.visited_nodes:
+                    continue
+
                 tentative_gScore = gScore[current_node] + 1
 
                 if child_node not in gScore or tentative_gScore < gScore[child_node]: #Si no tiene un costo registrado o el camino actual es mas barato

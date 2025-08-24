@@ -1,6 +1,7 @@
 from ..State import State
 from .Heuristic import Heuristic
 
+inf = float('inf')
 
 class EuclideanHeuristic(Heuristic):
     def __init__(self):
@@ -11,7 +12,7 @@ class EuclideanHeuristic(Heuristic):
         total_dist = 0
 
         for box in state.boxes:
-            min_dist = float('inf')
+            min_dist = inf
             for goal in state.goals:
                 dist = ((box.x - goal.x) ** 2 + (box.y - goal.y) ** 2) ** 0.5
                 if dist < min_dist:

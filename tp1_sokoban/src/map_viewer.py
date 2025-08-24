@@ -18,7 +18,7 @@ ELEMENTS = {
 
 class SokobanMapViewer(arcade.Window):
     def __init__(self, map_file_path, solution_path=None):
-        self.map_data, walls, goals, boxes, player_position = load_and_parse_map(map_file_path)
+        self.map_data, walls, goals, boxes, player_position, _ = load_and_parse_map(map_file_path)
 
         self.walls = {Point(r, c) for r, c in walls}
         self.goals = {Point(r, c) for r, c in goals}

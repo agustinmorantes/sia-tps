@@ -1,3 +1,5 @@
+from typing import Optional
+
 from .Direction import Direction
 from .Point import Point
 
@@ -14,7 +16,7 @@ class State:
         return self.player == other.player and self.boxes == other.boxes 
     
     def __hash__(self):
-        return hash((tuple(self.boxes), self.player))
+        return hash((frozenset(self.boxes), self.player))
     
     def is_solved(self):
         return self.boxes.issubset(self.goals)
@@ -53,7 +55,6 @@ class State:
         # Caso sin empujar caja
         return State(new_player, self.boxes.copy(), self.walls, self.goals, self.deadlocks)
 
-    
     def get_children(self):
         children = []
         for direction in [Direction.LEFT, Direction.UP, Direction.RIGHT, Direction.DOWN]:
