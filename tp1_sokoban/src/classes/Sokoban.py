@@ -46,7 +46,7 @@ class SokobanManager:
             node = node.parent
         return path[::-1]
 
-    def bfs(self):
+    def bfs(self):#Los nodos ya generados pero aun no explorados estan en queue , voy sacando el nodo mas viejo y analizando nivel por nivel
         self.start_time = time.time()
         queue = deque([self.root_node])
         self.visited_nodes.add(self.root_node)
@@ -132,7 +132,7 @@ class SokobanManager:
         openQueue = [(heuristic(self.root_node.state), next(counter), self.root_node)]
         openSet = {self.root_node}
 
-        gScore = {self.root_node: 0}
+        gScore = {self.root_node: 0} #Costo real desde el nodo inicial  hasta el nodo n 
         fScore = {self.root_node: heuristic(self.root_node.state)}
 
         while openQueue:
@@ -148,11 +148,11 @@ class SokobanManager:
             for child_node in current_node.get_children():
                 tentative_gScore = gScore[current_node] + 1
 
-                if child_node not in gScore or tentative_gScore < gScore[child_node]:
+                if child_node not in gScore or tentative_gScore < gScore[child_node]: #Si no tiene un costo registrado o el camino actual es mas barato
                     gScore[child_node] = tentative_gScore
                     fScore[child_node] = tentative_gScore + heuristic(child_node.state)
 
-                    if child_node not in openSet:
+                    if child_node not in openSet: #Si el hijo no esta en la frontera se agrega para explorarlo mas tarde 
                         heapq.heappush(openQueue, (fScore[child_node], next(counter), child_node))
                         openSet.add(child_node)
 
