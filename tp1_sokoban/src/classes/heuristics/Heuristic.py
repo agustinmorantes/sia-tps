@@ -1,4 +1,4 @@
-from sokoban_map_viewer.classes.State import State
+from ..State import State
 
 class Heuristic:
     def __init__(self, name: str, func):

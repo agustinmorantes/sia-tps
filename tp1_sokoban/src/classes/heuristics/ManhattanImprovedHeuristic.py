@@ -1,6 +1,6 @@
-from sokoban_map_viewer.classes.Point import Point
-from sokoban_map_viewer.classes.State import State
-from sokoban_map_viewer.classes.heuristics.Heuristic import Heuristic
+from ..Point import Point
+from ..State import State
+from .Heuristic import Heuristic
 
 
 class ManhattanImprovedHeuristic(Heuristic):

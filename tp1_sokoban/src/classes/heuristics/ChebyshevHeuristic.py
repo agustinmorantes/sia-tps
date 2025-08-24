@@ -1,4 +1,4 @@
-from sokoban_map_viewer.classes.heuristics.Heuristic import Heuristic
+from .Heuristic import Heuristic
 
 
 class ChebyshevHeuristic(Heuristic):

@@ -1,21 +1,20 @@
 import os
 import sys
-from collections import deque
-from classes.Point import Point
-from classes.Sokoban import SokobanManager
-from map_parser import load_and_parse_map
-from map_viewer import SokobanMapViewer
 import arcade
 
-from sokoban_map_viewer.classes.heuristics.ChebyshevHeuristic import ChebyshevHeuristic
-from sokoban_map_viewer.classes.heuristics.EuclideanHeuristic import EuclideanHeuristic
-from sokoban_map_viewer.classes.heuristics.HammingHeuristic import HammingHeuristic
-from sokoban_map_viewer.classes.heuristics.ManhattanHeuristic import ManhattanHeuristic
-from sokoban_map_viewer.classes.heuristics.ManhattanImprovedHeuristic import ManhattanImprovedHeuristic
+from src.classes.Point import Point
+from src.classes.Sokoban import SokobanManager
+from src.classes.heuristics.ChebyshevHeuristic import ChebyshevHeuristic
+from src.classes.heuristics.EuclideanHeuristic import EuclideanHeuristic
+from src.classes.heuristics.HammingHeuristic import HammingHeuristic
+from src.classes.heuristics.ManhattanHeuristic import ManhattanHeuristic
+from src.classes.heuristics.ManhattanImprovedHeuristic import ManhattanImprovedHeuristic
+from src.map_parser import load_and_parse_map
+from src.map_viewer import SokobanMapViewer
 
 
 def main():
-    map_file = os.path.join(f"{os.path.abspath(__file__)}","maps", "Map1.txt")
+    map_file = os.path.join("maps", "Map1.txt")
     if len(sys.argv) > 1:
         map_file = sys.argv[1]
 
@@ -32,7 +31,7 @@ def main():
 
     sokoban = SokobanManager(board=walls_points, goals=goals_points, player=player, boxes=boxes_points)
 
-    solution_path = sokoban.a_star(HammingHeuristic())
+    solution_path = sokoban.a_star(ManhattanImprovedHeuristic())
 
     if solution_path:
         print(f"Solución encontrada en {len(solution_path)-1} movimientos!")

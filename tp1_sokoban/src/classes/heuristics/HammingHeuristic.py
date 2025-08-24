@@ -1,4 +1,5 @@
-from sokoban_map_viewer.classes.heuristics.Heuristic import Heuristic
+from .Heuristic import Heuristic
+from ..State import State
 
 
 class HammingHeuristic(Heuristic):
@@ -6,5 +7,5 @@ class HammingHeuristic(Heuristic):
         super().__init__("Hamming", self.hamming)
 
     @staticmethod
-    def hamming(state) -> float:
+    def hamming(state: State) -> float:
         return sum(1 for box in state.boxes if box not in state.goals)

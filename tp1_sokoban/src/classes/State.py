@@ -1,5 +1,5 @@
-from sokoban_map_viewer.classes.Direction import Direction
-from sokoban_map_viewer.classes.Point import Point
+from .Direction import Direction
+from .Point import Point
 
 
 class State:

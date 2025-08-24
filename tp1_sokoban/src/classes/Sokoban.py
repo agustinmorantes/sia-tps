@@ -3,9 +3,9 @@ from collections import deque
 import time
 import heapq
 
-from sokoban_map_viewer.classes.Node import Node
-from sokoban_map_viewer.classes.State import State
-from sokoban_map_viewer.classes.heuristics.Heuristic import Heuristic
+from .Node import Node
+from .State import State
+from .heuristics.Heuristic import Heuristic
 
 
 class SokobanManager:

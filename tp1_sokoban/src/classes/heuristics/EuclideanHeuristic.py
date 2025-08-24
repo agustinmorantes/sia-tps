@@ -1,5 +1,5 @@
-from sokoban_map_viewer.classes.State import State
-from sokoban_map_viewer.classes.heuristics.Heuristic import Heuristic
+from ..State import State
+from .Heuristic import Heuristic
 
 
 class EuclideanHeuristic(Heuristic):

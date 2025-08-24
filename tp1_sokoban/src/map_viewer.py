@@ -1,8 +1,8 @@
 import arcade
-from map_parser import load_and_parse_map
+from .map_parser import load_and_parse_map
 import os
-from classes.State import State
-from classes.Point import Point
+from .classes.State import State
+from .classes.Point import Point
 
 SCREEN_TITLE = "Sokoban Map Viewer"
 PNG_SIZE = 64
