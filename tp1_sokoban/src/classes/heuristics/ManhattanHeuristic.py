@@ -3,7 +3,7 @@ from .Heuristic import Heuristic
 
 inf = float('inf')
 
-class ManhattanHeuristic(Heuristic):
+class ManhattanHeuristic(Heuristic): #Esta distancia representa el número mínimo de pasos ortogonales (arriba, abajo, izquierda, derecha) para llegar a la meta.
     def __init__(self):
         super().__init__("Manhattan", self.heuristic)
 

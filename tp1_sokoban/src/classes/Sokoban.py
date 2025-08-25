@@ -150,8 +150,8 @@ class SokobanManager:
         self.start_time = time.time()
 
         counter = itertools.count()
-        openQueue = [(heuristic(self.root_node.state), next(counter), self.root_node)]
-        openSet = {self.root_node}
+        openQueue = [(heuristic(self.root_node.state), next(counter), self.root_node)] #Elegir el mejor nodo segun fscore 
+        openSet = {self.root_node} #Voy guardando los nodos frontera 
 
         gScore = {self.root_node: 0} #Costo real desde el nodo inicial  hasta el nodo n 
         fScore = {self.root_node: heuristic(self.root_node.state)}

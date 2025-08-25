@@ -1,6 +1,6 @@
 from ..State import State
 
-class Heuristic:
+class Heuristic: #devuelven una estimación mínima del costo restante ,partiendo desde el estado actual,hasta llegar al estado meta  
     def __init__(self, name: str, func):
         self.name = name
         self.func = func

@@ -2,7 +2,7 @@ from .Heuristic import Heuristic
 from ..State import State
 
 
-class HammingHeuristic(Heuristic):
+class HammingHeuristic(Heuristic): #Cantidad de cajas fuera de lugar 
     def __init__(self):
         super().__init__("Hamming", self.hamming)
 

@@ -2,7 +2,7 @@ from .Heuristic import Heuristic
 
 inf = float('inf')
 
-class ChebyshevHeuristic(Heuristic):
+class ChebyshevHeuristic(Heuristic):  #Esto mide la cantidad mínima de pasos si pudieras moverte en 8 direcciones (vertical, horizontal y diagonal)
     def __init__(self):
         super().__init__("Chebyshev", self.chebyshev)
 

@@ -3,7 +3,7 @@ from .Heuristic import Heuristic
 
 inf = float('inf')
 
-class EuclideanHeuristic(Heuristic):
+class EuclideanHeuristic(Heuristic): # distancia recta,como si midieras con una regla,no respeta el movimiento real de Sokoban
     def __init__(self):
         super().__init__("Euclidean", self.euclidean)
 
