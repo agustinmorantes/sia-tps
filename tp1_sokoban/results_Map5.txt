@@ -1,10 +1,10 @@
-bfs: 266334
-dfs: 271785
-greedy_Chebyshev: 153107
-a_star_Chebyshev: 266169
-greedy_Euclidean: 178780
-a_star_Euclidean: 266136
-greedy_Hamming: 134194
-a_star_Hamming: 266208
-greedy_Manhattan: 182863
-a_star_Manhattan: 266135
+bfs: {'solution_cost': 134, 'nodes_expanded': 266334, 'border_nodes_count': 7165, 'execution_time': 5.782147645950317}
+dfs: {'solution_cost': 708, 'nodes_expanded': 271785, 'border_nodes_count': 681, 'execution_time': 5.988508462905884}
+greedy_Chebyshev: {'solution_cost': 160, 'nodes_expanded': 153107, 'border_nodes_count': 5608, 'execution_time': 4.193690776824951}
+a_star_Chebyshev: {'solution_cost': 134, 'nodes_expanded': 266169, 'border_nodes_count': 7470, 'execution_time': 8.678574323654175}
+greedy_Euclidean: {'solution_cost': 148, 'nodes_expanded': 178780, 'border_nodes_count': 2866, 'execution_time': 5.371522903442383}
+a_star_Euclidean: {'solution_cost': 134, 'nodes_expanded': 266136, 'border_nodes_count': 7319, 'execution_time': 9.518270015716553}
+greedy_Hamming: {'solution_cost': 177, 'nodes_expanded': 134194, 'border_nodes_count': 3271, 'execution_time': 3.5754752159118652}
+a_star_Hamming: {'solution_cost': 134, 'nodes_expanded': 266208, 'border_nodes_count': 7380, 'execution_time': 7.94326376914978}
+greedy_Manhattan: {'solution_cost': 148, 'nodes_expanded': 182863, 'border_nodes_count': 3350, 'execution_time': 4.945385456085205}
+a_star_Manhattan: {'solution_cost': 134, 'nodes_expanded': 266135, 'border_nodes_count': 7509, 'execution_time': 8.414629459381104}

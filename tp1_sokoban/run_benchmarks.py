@@ -35,10 +35,15 @@ def run_benchmark(map_file, algorithm_name, sokoban_manager, heuristic=None):
         print(f"  Solución encontrada en {len(solution_path) - 1} movimientos!")
         print(f"  Nodos expandidos: {sokoban_manager.nodes_expanded}")
         print(f"  Tiempo de ejecución (s): {sokoban_manager.execution_time}")
-        return sokoban_manager.nodes_expanded
+        return {
+            "solution_cost": len(solution_path) - 1,
+            "nodes_expanded": sokoban_manager.nodes_expanded,
+            "border_nodes_count": sokoban_manager.border_nodes_count,
+            "execution_time": sokoban_manager.execution_time
+        }
     else:
         print("  No se encontró solución.")
-        return -1
+        return {"solution_cost": -1, "nodes_expanded": -1, "border_nodes_count": -1, "execution_time": -1}
 
 def main():
     maps_dir = "maps"
@@ -72,8 +77,8 @@ def main():
 
         output_filename = f"results_{map_name}.txt"
         with open(output_filename, "w") as f:
-            for algo, expanded_nodes in results.items():
-                f.write(f"{algo}: {expanded_nodes}\n")
+            for algo, stats in results.items():
+                f.write(f"{algo}: {stats}\n")
         print(f"Results for {map_name} saved to {output_filename}")
 
 if __name__ == "__main__":

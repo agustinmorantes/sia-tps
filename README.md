@@ -20,3 +20,6 @@ pip install --user pipenv
   ```
   pipenv shell
   ```
+
+## Con run_benchmarks.py obtenemos los txt  que me dicen la cant de nodos,time,steps,etc  por mapa ,alg y heuristica 
+## Con results.py generamos los graficos relacionados a esto 
