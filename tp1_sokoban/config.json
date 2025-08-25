@@ -1,0 +1,66 @@
+{
+  "test_config": {
+    "iterations_per_algorithm": 10,
+    "maps": [
+      "maps/Map1.txt",
+      "maps/Map2.txt", 
+      "maps/Map3.txt",
+      "maps/Map4.txt",
+      "maps/Map5.txt"
+    ],
+    "algorithms": [
+      {
+        "name": "BFS",
+        "type": "uninformed",
+        "heuristic": null
+      },
+      {
+        "name": "DFS", 
+        "type": "uninformed",
+        "heuristic": null
+      },
+      {
+        "name": "Greedy",
+        "type": "informed",
+        "heuristic": "Manhattan"
+      },
+      {
+        "name": "Greedy",
+        "type": "informed", 
+        "heuristic": "Euclidean"
+      },
+      {
+        "name": "Greedy",
+        "type": "informed",
+        "heuristic": "Chebyshev"
+      },
+      {
+        "name": "Greedy",
+        "type": "informed",
+        "heuristic": "Hamming"
+      },
+      {
+        "name": "A*",
+        "type": "informed",
+        "heuristic": "Manhattan"
+      },
+      {
+        "name": "A*",
+        "type": "informed",
+        "heuristic": "Euclidean"
+      },
+      {
+        "name": "A*",
+        "type": "informed",
+        "heuristic": "Chebyshev"
+      },
+      {
+        "name": "A*",
+        "type": "informed",
+        "heuristic": "Hamming"
+      }
+    ],
+    "output_file": "performance_results.json",
+    "timeout_seconds": 300
+  }
+}
