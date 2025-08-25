@@ -16,11 +16,11 @@ def create_map_graph(df, map_name, output_dir="../graphs/"):
     # Filtrar datos para el mapa específico
     map_data = df[df['map_name'] == map_name]
     
-    # Calcular duración promedio por algoritmo
-    duration_data = map_data.groupby('algorithm_heuristic')['execution_time'].mean().reset_index()
-    
-    # Ordenar por duración (mejor rendimiento primero)
-    duration_data = duration_data.sort_values('execution_time')
+    # Calcular duración promedio y desviación estándar por algoritmo (en milisegundos)
+    duration_data = map_data.groupby('algorithm_heuristic')['execution_time'].agg(['mean', 'std']).reset_index()
+    duration_data['mean'] *= 1000  # Convertir a milisegundos
+    duration_data['std'] *= 1000   # Convertir a milisegundos
+    duration_data = duration_data.sort_values('mean')
     
     # Definir colores específicos para cada algoritmo
     colors = {
@@ -39,8 +39,13 @@ def create_map_graph(df, map_name, output_dir="../graphs/"):
     # Configurar el gráfico
     plt.figure(figsize=(12, 8))
     
-    # Crear gráfico de barras con colores específicos
-    bars = plt.bar(range(len(duration_data)), duration_data['execution_time'])
+    # Crear gráfico de barras con barras de error (desviación estándar)
+    bars = plt.bar(
+        range(len(duration_data)),
+        duration_data['mean'],
+        yerr=duration_data['std'],
+        capsize=6
+    )
     
     # Aplicar colores específicos a cada barra
     for i, (_, row) in enumerate(duration_data.iterrows()):
@@ -50,16 +55,16 @@ def create_map_graph(df, map_name, output_dir="../graphs/"):
     # Personalizar el gráfico
     plt.title(f'Duración Promedio por Algoritmo - {map_name}', fontsize=16, fontweight='bold', pad=20)
     plt.xlabel('Algoritmo', fontsize=12)
-    plt.ylabel('Tiempo de Ejecución (segundos)', fontsize=12)
-    
+    plt.ylabel('Tiempo de Ejecución (milisegundos)', fontsize=12)
+
     # Configurar etiquetas del eje X
     plt.xticks(range(len(duration_data)), duration_data['algorithm_heuristic'], rotation=45, ha='right')
     
     # Agregar valores en las barras
     for i, (_, row) in enumerate(duration_data.iterrows()):
-        plt.text(i, row['execution_time'] + max(duration_data['execution_time']) * 0.01, 
-                f'{row["execution_time"]:.6f}', ha='center', va='bottom', fontsize=10)
-    
+        plt.text(i, row['mean'] + max(duration_data['mean']) * 0.01, 
+                f'{row["mean"]:.2f}', ha='center', va='bottom', fontsize=10)
+
     # Ajustar layout
     plt.tight_layout()
     
