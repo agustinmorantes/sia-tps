@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 arcade = "*"
+pandas = "*"
+matplotlib = "*"
+seaborn = "*"
+pandas-stubs = "*"
 
 [dev-packages]
 
