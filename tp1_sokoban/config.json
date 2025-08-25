@@ -1,12 +1,12 @@
 {
   "test_config": {
-    "iterations_per_algorithm": 10,
+    "iterations_per_algorithm": 3,
     "maps": [
-      "maps/Map1.txt",
-      "maps/Map2.txt", 
-      "maps/Map3.txt",
-      "maps/Map4.txt",
-      "maps/Map5.txt"
+      "../maps/Map1.txt",
+      "../maps/Map2.txt", 
+      "../maps/Map3.txt",
+      "../maps/Map4.txt",
+      "../maps/Map5.txt"
     ],
     "algorithms": [
       {
