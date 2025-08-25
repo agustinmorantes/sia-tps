@@ -13,7 +13,7 @@ from src.map_viewer import SokobanMapViewer
 
 
 def main():
-    map_file = os.path.join("maps", "Map1.txt")
+    map_file = os.path.join("maps", "Map3.txt")
     if len(sys.argv) > 1:
         map_file = sys.argv[1]
 
@@ -30,7 +30,8 @@ def main():
 
     sokoban = SokobanManager(walls=walls_points, goals=goals_points, player=player, boxes=boxes_points, size=size)
 
-    solution_path = sokoban.bfs()
+    # solution_path = sokoban.bfs()
+    solution_path = sokoban.a_star(ChebyshevHeuristic())
 
     if solution_path:
         print(f"Solución encontrada en {len(solution_path)-1} movimientos!")

@@ -10,18 +10,17 @@ from .heuristics.Heuristic import Heuristic
 
 
 class SokobanManager:
-    _instance = None
+    def __init__(self, walls: set[Point], goals: set[Point], player: Point, boxes: set[Point], size: tuple[int, int]):
+        self.walls = walls
+        self.goals = goals
+        self.size = size
+        
+        self._initialize_state(player, boxes)
 
-    def __new__(cls, walls: set[Point], goals: set[Point], player: Point, boxes: set[Point], size: tuple[int, int]):
-        if cls._instance is None:
-            cls._instance = super(SokobanManager, cls).__new__(cls)
-            cls._instance._initialize(walls, goals, player, boxes, size)
-        return cls._instance
+    def _initialize_state(self, player: Point, boxes: set[Point]):
+        deadlocks = self._compute_deadlocks(self.walls, self.goals, self.size)
 
-    def _initialize(self, walls: set[Point], goals: set[Point], player: Point, boxes: set[Point], size: tuple[int, int]):
-        deadlocks = self._compute_deadlocks(walls, goals, size)
-
-        self.initial_state = State(player, boxes, walls, goals, deadlocks)
+        self.initial_state = State(player, boxes, self.walls, self.goals, deadlocks)
         self.root_node = Node(self.initial_state)
         self.visited_nodes = set()
         self.winning_path = deque()

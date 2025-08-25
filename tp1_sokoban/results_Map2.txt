@@ -1,0 +1,10 @@
+bfs: 6574
+dfs: 10232
+greedy_Chebyshev: 2655
+a_star_Chebyshev: 3783
+greedy_Euclidean: 2818
+a_star_Euclidean: 3297
+greedy_Hamming: 6210
+a_star_Hamming: 6287
+greedy_Manhattan: 3128
+a_star_Manhattan: 2802
