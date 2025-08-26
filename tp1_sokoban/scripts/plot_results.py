@@ -50,8 +50,8 @@ def plot_results():
     # Orden de algoritmos para consistencia
     algo_order = [
         "BFS", "DFS",
-        "Greedy (Manhattan)", "Greedy (Euclidean)", "Greedy (Chebyshev)", "Greedy (Hamming)",
-        "A* (Manhattan)", "A* (Euclidean)", "A* (Chebyshev)", "A* (Hamming)"
+        "Greedy (Manhattan)", "Greedy (Manhattan Improved)", "Greedy (Euclidean)", "Greedy (Chebyshev)", "Greedy (Hamming)",
+        "A* (Manhattan)", "A* (Manhattan Improved)", "A* (Euclidean)", "A* (Chebyshev)", "A* (Hamming)"
     ]
     
     # Métricas a graficar
@@ -122,7 +122,7 @@ def plot_results():
             for bar, value in zip(bars, values):
                 xval = bar.get_width()
                 plt.text(xval + max_val * 0.01, bar.get_y() + bar.get_height()/2,
-                        f"{value:,.2f}".replace(",", "."),
+                        f"{value}".replace(",", "."),
                         va='center', ha='left', fontsize=10, fontweight='bold')
             
             # Configurar título y etiquetas
