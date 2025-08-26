@@ -18,9 +18,7 @@ class SokobanManager:
         self._initialize_state(player, boxes)
 
     def _initialize_state(self, player: Point, boxes: set[Point]):
-        deadlocks = self._compute_deadlocks(self.walls, self.goals, self.size)
-
-        self.initial_state = State(player, boxes, self.walls, self.goals, deadlocks)
+        self.initial_state = State(player, boxes, self.walls, self.goals)
         self.root_node = Node(self.initial_state)
         self.visited_nodes = set()
         self.winning_path = deque()
@@ -30,24 +28,6 @@ class SokobanManager:
         self.execution_time = 0
         self.start_time = 0
         self.heuristics = {}
-
-    @staticmethod
-    def _compute_deadlocks(walls: set[Point], goals: set[Point], size: tuple[int,int]) -> set[Point]:
-        deadlocks = set()
-
-        x_size, y_size = size
-        for y in range(y_size):
-            for x in range(x_size):
-                p = Point(x, y)
-                if p in walls or p in goals: continue
-
-                if ((Point(x-1, y) in walls and Point(x, y-1) in walls)) or \
-                    ((Point(x+1, y) in walls and Point(x, y-1) in walls)) or \
-                    ((Point(x-1, y) in walls and Point(x, y+1) in walls)) or \
-                    ((Point(x+1, y) in walls and Point(x, y+1) in walls)):
-                        deadlocks.add(p)
-
-        return deadlocks
 
     def reset(self):
         self.visited_nodes.clear()

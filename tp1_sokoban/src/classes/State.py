@@ -5,12 +5,11 @@ from .Point import Point
 
 
 class State:
-    def __init__(self, player: Point, boxes: set[Point], walls: set[Point], goals: set[Point], deadlocks: set[Point]):
+    def __init__(self, player: Point, boxes: set[Point], walls: set[Point], goals: set[Point]):
         self.player: Point = player         # Player position
         self.boxes: set[Point] = boxes           # Boxes positions
         self.walls: set[Point] = walls           # Walls positions
         self.goals: set[Point] = goals           # Goals positions
-        self.deadlocks: set[Point] = deadlocks   # Deadlocks positions
 
     def __eq__(self, other):
         return self.player == other.player and self.boxes == other.boxes 
@@ -31,8 +30,6 @@ class State:
             new_box = new_player.move(direction)
             if new_box in self.walls or new_box in self.boxes:
                 return False
-            if new_box in self.deadlocks and new_box not in self.goals:
-                return False
 
         return True
 
@@ -49,11 +46,9 @@ class State:
             new_boxes = self.boxes.copy()
             new_boxes.remove(new_player)
             new_boxes.add(new_box)
-            if new_box in self.deadlocks and new_box not in self.goals:
-                return False
-            return State(new_player, new_boxes, self.walls, self.goals, self.deadlocks)
+            return State(new_player, new_boxes, self.walls, self.goals)
         # Caso sin empujar caja
-        return State(new_player, self.boxes.copy(), self.walls, self.goals, self.deadlocks)
+        return State(new_player, self.boxes.copy(), self.walls, self.goals)
 
     def get_children(self):
         children = []

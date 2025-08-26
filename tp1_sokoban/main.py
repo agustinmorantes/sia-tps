@@ -8,6 +8,7 @@ from src.classes.heuristics.ChebyshevHeuristic import ChebyshevHeuristic
 from src.classes.heuristics.EuclideanHeuristic import EuclideanHeuristic
 from src.classes.heuristics.HammingHeuristic import HammingHeuristic
 from src.classes.heuristics.ManhattanHeuristic import ManhattanHeuristic
+from src.classes.heuristics.ManhattanImprovedHeuristic import ManhattanImprovedHeuristic
 from src.map_parser import load_and_parse_map
 from src.map_viewer import SokobanMapViewer
 
@@ -30,7 +31,7 @@ def main():
 
     sokoban = SokobanManager(walls=walls_points, goals=goals_points, player=player, boxes=boxes_points, size=size)
 
-    solution_path = sokoban.bfs()
+    solution_path = sokoban.a_star(ManhattanImprovedHeuristic())
 
     if solution_path:
         print(f"Solución encontrada en {len(solution_path)-1} movimientos!")
