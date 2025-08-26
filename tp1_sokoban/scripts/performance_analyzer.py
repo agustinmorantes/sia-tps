@@ -7,7 +7,6 @@ from datetime import datetime
 from typing import Dict, List, Any, Optional
 import traceback
 
-from src.classes.heuristics.ManhattanImprovedHeuristic import ManhattanImprovedHeuristic
 
 # Agregar el directorio padre al path para poder importar src
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -16,6 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.classes.Point import Point
 from src.classes.Sokoban import SokobanManager
 from src.classes.heuristics.ManhattanHeuristic import ManhattanHeuristic
+from src.classes.heuristics.ManhattanImprovedHeuristic import ManhattanImprovedHeuristic
 from src.classes.heuristics.EuclideanHeuristic import EuclideanHeuristic
 from src.classes.heuristics.ChebyshevHeuristic import ChebyshevHeuristic
 from src.classes.heuristics.HammingHeuristic import HammingHeuristic
