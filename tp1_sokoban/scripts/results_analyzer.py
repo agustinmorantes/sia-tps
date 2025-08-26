@@ -6,7 +6,7 @@ import os
 
 
 class ResultsAnalyzer:
-    def __init__(self, results_file: str = "results/performance_results.json"):
+    def __init__(self, results_file: str = "../results/performance_results.json"):
         self.results_file = results_file or "../results/performance_results.json"
         self.results_dir = "../results"
         
@@ -162,7 +162,7 @@ class ResultsAnalyzer:
     
 
     
-    def export_to_csv(self, prefix: str = "results/analysis"):
+    def export_to_csv(self, prefix: str = "../results/analysis"):
         """Exporta los resultados a archivos CSV para análisis externo"""
         df = self.create_dataframe()
         
@@ -178,7 +178,7 @@ def main():
     if len(sys.argv) > 1:
         results_file = sys.argv[1]
     else:
-        results_file = "results/performance_results.json"
+        results_file = "../results/performance_results.json"
     
     try:
         analyzer = ResultsAnalyzer(results_file)
