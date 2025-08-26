@@ -7,6 +7,8 @@ from datetime import datetime
 from typing import Dict, List, Any, Optional
 import traceback
 
+from src.classes.heuristics.ManhattanImprovedHeuristic import ManhattanImprovedHeuristic
+
 # Agregar el directorio padre al path para poder importar src
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -34,6 +36,7 @@ class PerformanceAnalyzer:
         self.results = []
         self.heuristics = {
             "Manhattan": ManhattanHeuristic(),
+            "Manhattan Improved": ManhattanImprovedHeuristic(),
             "Euclidean": EuclideanHeuristic(),
             "Chebyshev": ChebyshevHeuristic(),
             "Hamming": HammingHeuristic()
