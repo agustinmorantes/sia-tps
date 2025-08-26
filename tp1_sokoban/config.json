@@ -1,6 +1,6 @@
 {
   "test_config": {
-    "iterations_per_algorithm": 30,
+    "iterations_per_algorithm": 10,
     "maps": [
       "../maps/Map3.txt",
       "../maps/Map5.txt"
