@@ -121,8 +121,9 @@ def plot_results():
             # Agregar valores en las barras
             for bar, value in zip(bars, values):
                 xval = bar.get_width()
+                intValue = int(value)
                 plt.text(xval + max_val * 0.01, bar.get_y() + bar.get_height()/2,
-                        f"{value}".replace(",", "."),
+                        f"{intValue}".replace(",", "."),
                         va='center', ha='left', fontsize=10, fontweight='bold')
             
             # Configurar título y etiquetas
