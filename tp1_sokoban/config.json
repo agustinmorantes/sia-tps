@@ -67,7 +67,6 @@
         "heuristic": "Hamming"
       }
     ],
-    "output_file": "performance_results.json",
-    "timeout_seconds": 50000
+    "output_file": "performance_results.json"
   }
 }

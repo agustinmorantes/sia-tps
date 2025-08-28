@@ -2,11 +2,9 @@ import json
 import os
 import sys
 import time
-import signal
-from datetime import datetime
-from typing import Dict, List, Any, Optional
 import traceback
-
+from datetime import datetime
+from typing import Dict, Any, Optional
 
 # Agregar el directorio padre al path para poder importar src
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -20,14 +18,6 @@ from src.classes.heuristics.EuclideanHeuristic import EuclideanHeuristic
 from src.classes.heuristics.ChebyshevHeuristic import ChebyshevHeuristic
 from src.classes.heuristics.HammingHeuristic import HammingHeuristic
 from src.map_parser import load_and_parse_map
-
-
-class TimeoutError(Exception):
-    pass
-
-
-def timeout_handler(signum, frame):
-    raise TimeoutError("Execution timed out")
 
 
 class PerformanceAnalyzer:
@@ -76,11 +66,7 @@ class PerformanceAnalyzer:
     def run_algorithm(self, sokoban: SokobanManager, algorithm_name: str, heuristic_name: Optional[str] = None) -> Dict[str, Any]:
         """Ejecuta un algoritmo específico y retorna las estadísticas"""
         sokoban.reset()
-        
-        # Configurar timeout
-        signal.signal(signal.SIGALRM, timeout_handler)
-        signal.alarm(self.config["test_config"]["timeout_seconds"])
-        
+
         try:
             start_time = time.time()
             
@@ -100,9 +86,7 @@ class PerformanceAnalyzer:
                 solution = sokoban.a_star(heuristic)
             else:
                 raise ValueError(f"Algoritmo no reconocido: {algorithm_name}")
-            
-            signal.alarm(0)  # Cancelar timeout
-            
+
             stats = sokoban.get_statistics()
             stats["algorithm"] = algorithm_name
             stats["heuristic"] = heuristic_name
@@ -112,21 +96,7 @@ class PerformanceAnalyzer:
             
             return stats
             
-        except TimeoutError:
-            signal.alarm(0)
-            return {
-                "algorithm": algorithm_name,
-                "heuristic": heuristic_name,
-                "solution_found": False,
-                "solution_length": 0,
-                "nodes_expanded": 0,
-                "border_nodes_count": 0,
-                "execution_time": self.config["test_config"]["timeout_seconds"],
-                "total_time": self.config["test_config"]["timeout_seconds"],
-                "timeout": True
-            }
         except Exception as e:
-            signal.alarm(0)
             return {
                 "algorithm": algorithm_name,
                 "heuristic": heuristic_name,
@@ -259,11 +229,9 @@ class PerformanceAnalyzer:
             
             # Calcular estadísticas
             successful = [r for r in results if r["solution_found"]]
-            timeouts = [r for r in results if r.get("timeout", False)]
             errors = [r for r in results if "error" in r]
             
             print(f"  Pruebas exitosas: {len(successful)}/{len(results)}")
-            print(f"  Timeouts: {len(timeouts)}")
             print(f"  Errores: {len(errors)}")
             
             if successful:
