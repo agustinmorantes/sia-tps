@@ -4,3 +4,5 @@ genetic_algorithm/models/__pycache__
 genetic_algorithm/selection_algorithms/__pycache__
 data.csv
 outputs/*
+*.DS_Store
+sokoban_map_viewer/
