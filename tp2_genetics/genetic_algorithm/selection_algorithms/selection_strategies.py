@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List
 from genetic_algorithm.models.individual_solution import IndividualSolution
 from genetic_algorithm.utils.random_seed_manager import central_random_generator as random_generator # Importación del generador centralizado
+import math
 
 class SelectionStrategy(ABC):
     def __init__(self, size):
@@ -94,6 +95,9 @@ class RankingSelection(SelectionStrategy):
             pseudo_fit_values.append(((len(sorted_population) - rank) / len(population), sorted_population[rank - 1]))
 
         total_pseudo_fit = sum(p[0] for p in pseudo_fit_values)
+
+        if total_pseudo_fit == 0:
+            return random_generator.choices(population, k=self.size)
         
         pseudo_fit_values_rel = []
         for pseudo_fit, ind in pseudo_fit_values:
@@ -110,7 +114,82 @@ class RankingSelection(SelectionStrategy):
                     break
 
         return selected_individuals
-        
+
+class BoltzmannSelection(SelectionStrategy):
+    def __init__(self, size, temperature: float = 1.0):
+        super().__init__(size)
+        self.temperature = temperature
+
+    def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
+        num_values = []
+        for ind in population:
+            fit = fitness_cache[hash(str(ind))]
+            # Min is for avoiding overflow error when fit is big and temperature is too tiny
+            num_val = math.exp(min(fit / self.temperature, 700))
+            num_values.append((num_val, ind))
+
+        avg_val = sum(num_val for num_val, _ in num_values) / len(num_values)
+
+        if avg_val == 0:
+            return random_generator.choices(population, k=self.size)
+
+        boltzmann_fit_values = [((num_val / avg_val), ind) for num_val, ind in num_values]
+
+        total_boltzmann_fits = sum(boltzmann_fit_val for boltzmann_fit_val, _ in boltzmann_fit_values)
+
+        boltzmann_fit_rel_values = [((boltzmann_fit_val / total_boltzmann_fits), ind) for boltzmann_fit_val, ind in boltzmann_fit_values]
+
+        selected_individuals = []
+        for _ in range(self.size):
+            random_value = random_generator.random()
+            current_prob = 0
+            for boltzmann_rel_value, ind in boltzmann_fit_rel_values:
+                current_prob += boltzmann_rel_value
+                if current_prob > random_value:
+                    selected_individuals.append(ind)
+                    break
+
+        return selected_individuals
+
+class BoltzmannAnnealingSelection(SelectionStrategy):
+    def __init__(self, size, T0: float = 10.0, Tc: float = 1.0, k: float = 0.01):
+        super().__init__(size)
+        self.T0 = T0
+        self.Tc = Tc
+        self.k = k
+
+    def get_temperature(self, generation: int) -> float:
+        return self.Tc + (self.T0 - self.Tc) * math.exp(-self.k * generation)
+
+    def select(self, population: List[IndividualSolution], fitness_cache: dict, generation: int = 0) -> List[IndividualSolution]:
+        # calcular temperatura en esta generación
+        temperature = self.get_temperature(generation)
+
+        num_values = []
+        for ind in population:
+            fit = fitness_cache[hash(str(ind))]
+            num_val = math.exp(fit / temperature)
+            num_values.append((num_val, ind))
+
+        avg_val = sum(num_val for num_val, _ in num_values) / len(num_values)
+
+        boltzmann_fit_values = [((num_val / avg_val), ind) for num_val, ind in num_values]
+
+        total_boltzmann_fits = sum(boltzmann_fit_val for boltzmann_fit_val, _ in boltzmann_fit_values)
+
+        boltzmann_fit_rel_values = [((boltzmann_fit_val / total_boltzmann_fits), ind) for boltzmann_fit_val, ind in boltzmann_fit_values]
+
+        selected_individuals = []
+        for _ in range(self.size):
+            random_value = random_generator.random()
+            current_prob = 0
+            for boltzmann_rel_value, ind in boltzmann_fit_rel_values:
+                current_prob += boltzmann_rel_value
+                if current_prob > random_value:
+                    selected_individuals.append(ind)
+                    break
+
+        return selected_individuals
 
 class TournamentSelection(SelectionStrategy):
     def __init__(self, size, tournament_size=2):

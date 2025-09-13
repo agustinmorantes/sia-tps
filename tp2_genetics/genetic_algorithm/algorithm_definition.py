@@ -1,5 +1,5 @@
 from genetic_algorithm.utils.create_individuals import create_initial_population
-from genetic_algorithm.selection_algorithms.selection_strategies import EliteSelection, RouletteSelection, UniversalSelection, SelectionStrategy, TournamentDeterministicSelection, TournamentProbabilisticSelection, RankingSelection
+from genetic_algorithm.selection_algorithms.selection_strategies import EliteSelection, RouletteSelection, UniversalSelection, SelectionStrategy, TournamentDeterministicSelection, TournamentProbabilisticSelection, RankingSelection, BoltzmannSelection, BoltzmannAnnealingSelection
 from genetic_algorithm.crossover import Crossover, OnePointCrossover, TwoPointsCrossover, CrossoverStrategy
 from genetic_algorithm.mutation import GeneModifier
 from genetic_algorithm.utils.random_seed_manager import central_random_generator as random_generator # Importación del generador centralizado
@@ -66,6 +66,10 @@ class EvolutionaryImageApproximator:
             selection_strategy = TournamentProbabilisticSelection(size)
         elif selection_algorithm_name == "ranking":
             selection_strategy = RankingSelection(size)
+        elif selection_algorithm_name == "boltzmann":
+            selection_strategy = BoltzmannSelection(size)
+        elif selection_algorithm_name == "boltzmann_annealing":
+            selection_strategy = BoltzmannAnnealingSelection(size)
         else:
             raise ValueError(f"Método de selección desconocido: {selection_algorithm_name}")
         

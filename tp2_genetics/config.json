@@ -5,8 +5,8 @@
     "recombination_probability": 0.5,
     "mutations": "single",
     "mutation_probability": 0.6,
-    "rounds": 1500,
+    "rounds": 1000,
     "parents_selection_percentage": 0.5,
-    "selection_algorithm": "ranking",
+    "selection_algorithm": "boltzmann_annealing",
     "crossover_algorithm": "one_point"
 }
