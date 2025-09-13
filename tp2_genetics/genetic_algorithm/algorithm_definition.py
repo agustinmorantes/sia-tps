@@ -46,7 +46,16 @@ class EvolutionaryImageApproximator:
 
         return fitness_values, best_fitness_value, best_solution
 
-    def run(self, initial_solution_set: List[IndividualSolution], primitives_per_solution: int = 50, recombination_probability: float = 1.0, mutation_probability: float = 0.0,selection_algorithm_name: str ="elite",crossover_method_name: str ="one_point") -> Tuple[IndividualSolution, float, int]: # Anotaciones de tipo
+    def run(
+            self, 
+            initial_solution_set: List[IndividualSolution], 
+            primitives_per_solution: int = 50, 
+            recombination_probability: float = 1.0,
+            mutation_probability: float = 0.0,
+            selection_algorithm_name: str ="elite",
+            crossover_method_name: str ="one_point",
+            **selection_params
+        ) -> Tuple[IndividualSolution, float, int]: # Anotaciones de tipo
 
         self.current_population = initial_solution_set # Renombrado
 
@@ -61,15 +70,36 @@ class EvolutionaryImageApproximator:
         elif selection_algorithm_name == "universal":
             selection_strategy = UniversalSelection(size)
         elif selection_algorithm_name == "tournament_deterministic":
-            selection_strategy = TournamentDeterministicSelection(size, tournament_size=100)
+            tournament_size = selection_params.get("tournament_size", None)
+            if tournament_size is not None:
+                selection_strategy = TournamentDeterministicSelection(size, tournament_size=tournament_size)
+            else:
+                selection_strategy = TournamentDeterministicSelection(size)
         elif selection_algorithm_name == "tournament_probabilistic":
-            selection_strategy = TournamentProbabilisticSelection(size)
+            tournament_size = selection_params.get("tournament_size", None)
+            tournament_threshold = selection_params.get("tournament_threshold", None)
+            if tournament_size is not None and tournament_threshold is not None:
+                selection_strategy = TournamentProbabilisticSelection(
+                    size, tournament_size=tournament_size, threshold=tournament_threshold
+                )
+            else:
+                selection_strategy = TournamentProbabilisticSelection(size)
         elif selection_algorithm_name == "ranking":
             selection_strategy = RankingSelection(size)
         elif selection_algorithm_name == "boltzmann":
-            selection_strategy = BoltzmannSelection(size)
+            boltzmann_temperature = selection_params.get("boltzmann_temperature", None)
+            if boltzmann_temperature is not None:
+                selection_strategy = BoltzmannSelection(size, temperature=boltzmann_temperature)
+            else:
+                selection_strategy = BoltzmannSelection(size)
         elif selection_algorithm_name == "boltzmann_annealing":
-            selection_strategy = BoltzmannAnnealingSelection(size)
+            boltzmann_t0 = selection_params.get("boltzmann_t0", None)
+            boltzmann_tc = selection_params.get("boltzmann_tc", None)
+            boltzmann_k = selection_params.get("boltzmann_k", None)
+            if boltzmann_t0 is not None and boltzmann_tc is not None and boltzmann_k is not None:
+                selection_strategy = BoltzmannAnnealingSelection(size, t0=boltzmann_t0, tc=boltzmann_tc, k=boltzmann_k)
+            else:
+                selection_strategy = BoltzmannAnnealingSelection(size)
         else:
             raise ValueError(f"Método de selección desconocido: {selection_algorithm_name}")
         

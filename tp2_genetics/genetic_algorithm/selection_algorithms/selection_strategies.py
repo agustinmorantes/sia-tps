@@ -152,14 +152,14 @@ class BoltzmannSelection(SelectionStrategy):
         return selected_individuals
 
 class BoltzmannAnnealingSelection(SelectionStrategy):
-    def __init__(self, size, T0: float = 10.0, Tc: float = 1.0, k: float = 0.01):
+    def __init__(self, size, t0: float = 10.0, tc: float = 1.0, k: float = 0.01):
         super().__init__(size)
-        self.T0 = T0
-        self.Tc = Tc
+        self.t0 = t0
+        self.tc = tc
         self.k = k
 
     def get_temperature(self, generation: int) -> float:
-        return self.Tc + (self.T0 - self.Tc) * math.exp(-self.k * generation)
+        return self.tc + (self.t0 - self.tc) * math.exp(-self.k * generation)
 
     def select(self, population: List[IndividualSolution], fitness_cache: dict, generation: int = 0) -> List[IndividualSolution]:
         # calcular temperatura en esta generación
