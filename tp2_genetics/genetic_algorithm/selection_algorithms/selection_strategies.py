@@ -82,3 +82,59 @@ class UniversalSelection(SelectionStrategy):
                     break
         
         return selected_individuals
+
+class TournamentSelection(SelectionStrategy):
+    def __init__(self, size, tournament_size=2):
+        super().__init__(size)
+        self.tournament_size = tournament_size
+
+    def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
+        pass
+
+class TournamentDeterministicSelection(TournamentSelection):
+    def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
+        selected_individuals = []
+
+        for _ in range(self.size):
+            tournament = random_generator.sample(population, self.tournament_size)
+            best_individual = max(tournament, key=lambda ind: fitness_cache[hash(str(ind))])
+            selected_individuals.append(best_individual)
+        
+        return selected_individuals
+    
+    def select_without_repetition(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
+        selected_individuals = []
+        
+        available_population = population.copy()
+        for _ in range(self.size):
+            if len(available_population) < self.tournament_size:
+                break
+            tournament = random_generator.sample(available_population, self.tournament_size)
+            best_individual = max(tournament, key=lambda ind: fitness_cache[hash(str(ind))])
+            selected_individuals.append(best_individual)
+            available_population.remove(best_individual)
+        
+        return selected_individuals
+
+        
+class TournamentProbabilisticSelection(TournamentSelection):
+    def __init__(self, size, tournament_size=2, threshold=0.5):
+        super().__init__(size)
+        self.tournament_size = 2
+        self.threshold = threshold
+            
+
+    def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
+        selected_individuals = [] 
+
+        for _ in range(self.size):
+            tournament = random_generator.sample(population, self.tournament_size)
+            r = random_generator.random()
+            if r < self.threshold:
+                selected_individual = min(tournament, key=lambda ind: fitness_cache[hash(str(ind))])
+            else:
+                selected_individual = max(tournament, key=lambda ind: fitness_cache[hash(str(ind))])
+            
+            selected_individuals.append(selected_individual)
+        
+        return selected_individuals
