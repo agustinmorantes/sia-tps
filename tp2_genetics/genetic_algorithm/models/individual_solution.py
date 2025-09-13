@@ -6,7 +6,7 @@ class GeometricPrimitive:
         # color: tupla (R, G, B) para el color uniforme del primitivo
         self.vertices = vertices
         self.color = color
-        self.genes = []
+        self.genes: list[RGBComponentAttribute | VertexCoordinateAttribute] = []
         self._set_primitive_genes()
 
     def _set_primitive_genes(self):
@@ -39,9 +39,17 @@ class GeometricPrimitive:
                 self.vertices[2] = gene.value
 
 class IndividualSolution:
+    id_counter = 0
+
     def __init__(self):
-        self.primitives = [] # Lista de GeometricPrimitives
-        self.chromosome = [] # Lista extendida de todos los genes de los primitivos
+        self.primitives: list[GeometricPrimitive] = [] # Lista de GeometricPrimitives
+        self.chromosome: list[RGBComponentAttribute | VertexCoordinateAttribute] = [] # Lista extendida de todos los genes de los primitivos
+
+        self.id = IndividualSolution.id_counter
+        IndividualSolution.id_counter += 1
+
+    def __hash__(self):
+        return hash(self.id)
 
     def add_primitive(self, primitive: GeometricPrimitive):
         self.primitives.append(primitive)

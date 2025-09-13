@@ -6,17 +6,14 @@ def render_solution_to_image(solution: IndividualSolution, width=500, height=500
     image = Image.new('RGBA', (width, height), (255, 255, 255, 255)) # Canvas blanco inicial
 
     for primitive in solution.primitives:
-        # Crear un template temporal para cada primitivo
-        primitive_temp = Image.new('RGBA', (width, height), (0, 0, 0, 0))
-        draw = ImageDraw.Draw(primitive_temp, 'RGBA')
+        draw = ImageDraw.Draw(image, 'RGBA')
 
         vertices = primitive.vertices
         r, g, b = primitive.color
         alpha = int(0.8 * 255) # Opacidad fija por ahora
 
         draw.polygon(vertices, fill=(r, g, b, alpha))
-        image = Image.alpha_composite(image, primitive_temp) # Superponer el primitivo al canvas principal
-    
+
     # Convertir a RGB para la salida final si es necesario (sin canal alfa)
     image_rgb = image.convert('RGB')
     return image_rgb

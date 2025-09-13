@@ -31,7 +31,7 @@ class EvolutionaryImageApproximator:
         best_solution: IndividualSolution = None # Renombrado y anotación de tipo
 
         for individual in population:
-            individual_hash = hash(str(individual))
+            individual_hash = hash(individual)
             if individual_hash in self.fitness_cache:
                 value = self.fitness_cache[individual_hash]
             else:

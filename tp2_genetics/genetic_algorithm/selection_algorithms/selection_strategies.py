@@ -19,7 +19,7 @@ class EliteSelection(SelectionStrategy):
         counter = 0
         for individual in population:
             counter += 1
-            individual_hash = hash(str(individual))
+            individual_hash = hash(individual)
             hp.heappush(fitness_priority_queue, (-fitness_cache[individual_hash], counter, individual))
         
         best_individuals = []
@@ -33,14 +33,14 @@ class EliteSelection(SelectionStrategy):
 
 class RouletteSelection(SelectionStrategy):
     def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
-        total_fitness = sum(fitness_cache[hash(str(individual))] for individual in population)
+        total_fitness = sum(fitness_cache[hash(individual)] for individual in population)
         
         if total_fitness == 0:
             return random_generator.choices(population, k=self.size)
         
         fitness_values_list = []
         for ind in population:
-            individual_hash = hash(str(ind))
+            individual_hash = hash(ind)
             fitness_values_list.append((fitness_cache[individual_hash], ind))
         
         selection_probs = [item[0] / total_fitness for item in fitness_values_list]
@@ -58,14 +58,14 @@ class RouletteSelection(SelectionStrategy):
 
 class UniversalSelection(SelectionStrategy):
     def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
-        total_fitness = sum(fitness_cache[hash(str(individual))] for individual in population)
+        total_fitness = sum(fitness_cache[hash(individual)] for individual in population)
         
         if total_fitness == 0:
             return random_generator.choices(population, k=self.size)
         
         fitness_values_list = []
         for ind in population:
-            individual_hash = hash(str(ind))
+            individual_hash = hash(ind)
             fitness_values_list.append((fitness_cache[individual_hash], ind))
 
         selection_probs = [item[0] / total_fitness for item in fitness_values_list]
@@ -87,7 +87,7 @@ class UniversalSelection(SelectionStrategy):
 class RankingSelection(SelectionStrategy):
     def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
 
-        sorted_population = sorted(population, key=lambda ind: fitness_cache[hash(str(ind))], reverse=True)
+        sorted_population = sorted(population, key=lambda ind: fitness_cache[hash(ind)], reverse=True)
         ranks = list(range(1, len(sorted_population)+1))
 
         pseudo_fit_values = []
@@ -123,7 +123,7 @@ class BoltzmannSelection(SelectionStrategy):
     def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
         num_values = []
         for ind in population:
-            fit = fitness_cache[hash(str(ind))]
+            fit = fitness_cache[hash(ind)]
             # Min is for avoiding overflow error when fit is big and temperature is too tiny
             num_val = math.exp(min(fit / self.temperature, 700))
             num_values.append((num_val, ind))
@@ -167,7 +167,7 @@ class BoltzmannAnnealingSelection(SelectionStrategy):
 
         num_values = []
         for ind in population:
-            fit = fitness_cache[hash(str(ind))]
+            fit = fitness_cache[hash(ind)]
             num_val = math.exp(fit / temperature)
             num_values.append((num_val, ind))
 
@@ -205,7 +205,7 @@ class TournamentDeterministicSelection(TournamentSelection):
 
         for _ in range(self.size):
             tournament = random_generator.sample(population, self.tournament_size)
-            best_individual = max(tournament, key=lambda ind: fitness_cache[hash(str(ind))])
+            best_individual = max(tournament, key=lambda ind: fitness_cache[hash(ind)])
             selected_individuals.append(best_individual)
         
         return selected_individuals
@@ -218,7 +218,7 @@ class TournamentDeterministicSelection(TournamentSelection):
             if len(available_population) < self.tournament_size:
                 break
             tournament = random_generator.sample(available_population, self.tournament_size)
-            best_individual = max(tournament, key=lambda ind: fitness_cache[hash(str(ind))])
+            best_individual = max(tournament, key=lambda ind: fitness_cache[hash(ind)])
             selected_individuals.append(best_individual)
             available_population.remove(best_individual)
         
@@ -238,9 +238,9 @@ class TournamentProbabilisticSelection(TournamentSelection):
             tournament = random_generator.sample(population, self.tournament_size)
             r = random_generator.random()
             if r < self.threshold:
-                selected_individual = min(tournament, key=lambda ind: fitness_cache[hash(str(ind))])
+                selected_individual = min(tournament, key=lambda ind: fitness_cache[hash(ind)])
             else:
-                selected_individual = max(tournament, key=lambda ind: fitness_cache[hash(str(ind))])
+                selected_individual = max(tournament, key=lambda ind: fitness_cache[hash(ind)])
             
             selected_individuals.append(selected_individual)
         
