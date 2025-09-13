@@ -1,0 +1,84 @@
+import heapq as hp
+from abc import ABC, abstractmethod
+from typing import List
+from genetic_algorithm.models.individual_solution import IndividualSolution
+from genetic_algorithm.utils.random_seed_manager import central_random_generator as random_generator # Importación del generador centralizado
+
+class SelectionStrategy(ABC):
+    def __init__(self, size):
+        self.size = size
+
+    @abstractmethod
+    def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
+        pass
+
+class EliteSelection(SelectionStrategy):
+    def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
+        fitness_priority_queue = []
+        counter = 0
+        for individual in population:
+            counter += 1
+            individual_hash = hash(str(individual))
+            hp.heappush(fitness_priority_queue, (-fitness_cache[individual_hash], counter, individual))
+        
+        best_individuals = []
+        for _ in range(self.size):
+            if fitness_priority_queue:
+                _, _, individual = hp.heappop(fitness_priority_queue)
+                best_individuals.append(individual)
+            else:
+                break
+        return best_individuals
+
+class RouletteSelection(SelectionStrategy):
+    def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
+        total_fitness = sum(fitness_cache[hash(str(individual))] for individual in population)
+        
+        if total_fitness == 0:
+            return random_generator.choices(population, k=self.size)
+        
+        fitness_values_list = []
+        for ind in population:
+            individual_hash = hash(str(ind))
+            fitness_values_list.append((fitness_cache[individual_hash], ind))
+        
+        selection_probs = [item[0] / total_fitness for item in fitness_values_list]
+        selected_individuals = []
+        
+        for _ in range(self.size):
+            random_value = random_generator.random()
+            current_prob = 0
+            for i in range(len(population)):
+                current_prob += selection_probs[i]
+                if current_prob > random_value:
+                    selected_individuals.append(fitness_values_list[i][1])
+                    break
+        return selected_individuals
+
+class UniversalSelection(SelectionStrategy):
+    def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
+        total_fitness = sum(fitness_cache[hash(str(individual))] for individual in population)
+        
+        if total_fitness == 0:
+            return random_generator.choices(population, k=self.size)
+        
+        fitness_values_list = []
+        for ind in population:
+            individual_hash = hash(str(ind))
+            fitness_values_list.append((fitness_cache[individual_hash], ind))
+
+        selection_probs = [item[0] / total_fitness for item in fitness_values_list]
+        selected_individuals = []
+
+        start_point = random_generator.random()
+        
+        for k in range(self.size):
+            pointer = (start_point + k) / self.size
+            current_prob_sum = 0
+            for i in range(len(population)):
+                current_prob_sum += selection_probs[i]
+                if current_prob_sum >= pointer:
+                    selected_individuals.append(fitness_values_list[i][1])
+                    break
+        
+        return selected_individuals
