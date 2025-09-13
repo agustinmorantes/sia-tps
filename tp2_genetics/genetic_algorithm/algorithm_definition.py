@@ -1,5 +1,5 @@
 from genetic_algorithm.utils.create_individuals import create_initial_population
-from genetic_algorithm.selection_algorithms.selection_strategies import EliteSelection, RouletteSelection, UniversalSelection, SelectionStrategy, TournamentDeterministicSelection, TournamentProbabilisticSelection
+from genetic_algorithm.selection_algorithms.selection_strategies import EliteSelection, RouletteSelection, UniversalSelection, SelectionStrategy, TournamentDeterministicSelection, TournamentProbabilisticSelection, RankingSelection
 from genetic_algorithm.crossover import Crossover, OnePointCrossover, TwoPointsCrossover, CrossoverStrategy
 from genetic_algorithm.mutation import GeneModifier
 from genetic_algorithm.utils.random_seed_manager import central_random_generator as random_generator # Importación del generador centralizado
@@ -64,6 +64,8 @@ class EvolutionaryImageApproximator:
             selection_strategy = TournamentDeterministicSelection(size, tournament_size=100)
         elif selection_algorithm_name == "tournament_probabilistic":
             selection_strategy = TournamentProbabilisticSelection(size)
+        elif selection_algorithm_name == "ranking":
+            selection_strategy = RankingSelection(size)
         else:
             raise ValueError(f"Método de selección desconocido: {selection_algorithm_name}")
         

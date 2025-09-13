@@ -1,12 +1,12 @@
 {
-    "target_image_path": "./images/noche_estrellada.jpg",
+    "target_image_path": "./images/jamaica.jpg",
     "initial_population_size": 100,
-    "triangles_per_solution": 500,
+    "triangles_per_solution": 90,
     "recombination_probability": 0.5,
     "mutations": "single",
     "mutation_probability": 0.6,
-    "rounds": 100,
+    "rounds": 1500,
     "parents_selection_percentage": 0.5,
-    "selection_algorithm": "tournament_probabilistic",
+    "selection_algorithm": "ranking",
     "crossover_algorithm": "one_point"
 }

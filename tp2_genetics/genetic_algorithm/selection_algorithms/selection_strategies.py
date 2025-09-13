@@ -83,6 +83,35 @@ class UniversalSelection(SelectionStrategy):
         
         return selected_individuals
 
+class RankingSelection(SelectionStrategy):
+    def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
+
+        sorted_population = sorted(population, key=lambda ind: fitness_cache[hash(str(ind))], reverse=True)
+        ranks = list(range(1, len(sorted_population)+1))
+
+        pseudo_fit_values = []
+        for rank in ranks:
+            pseudo_fit_values.append(((len(sorted_population) - rank) / len(population), sorted_population[rank - 1]))
+
+        total_pseudo_fit = sum(p[0] for p in pseudo_fit_values)
+        
+        pseudo_fit_values_rel = []
+        for pseudo_fit, ind in pseudo_fit_values:
+            pseudo_fit_values_rel.append(((pseudo_fit / total_pseudo_fit), ind))
+        
+        selected_individuals = []
+        for _ in range(self.size):
+            random_value = random_generator.random()
+            current_prob = 0
+            for prob, ind in pseudo_fit_values_rel:
+                current_prob += prob
+                if current_prob > random_value:
+                    selected_individuals.append(ind)
+                    break
+
+        return selected_individuals
+        
+
 class TournamentSelection(SelectionStrategy):
     def __init__(self, size, tournament_size=2):
         super().__init__(size)
@@ -123,7 +152,6 @@ class TournamentProbabilisticSelection(TournamentSelection):
         self.tournament_size = 2
         self.threshold = threshold
             
-
     def select(self, population: List[IndividualSolution], fitness_cache: dict) -> List[IndividualSolution]:
         selected_individuals = [] 
 
