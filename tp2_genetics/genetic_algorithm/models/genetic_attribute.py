@@ -42,9 +42,20 @@ class RGBComponentAttribute(GeneticAttribute):
         self.value = max(self.min_val, min(self.max_val, new_value))
 
 class VertexCoordinateAttribute(GeneticAttribute):
+    bounds_extension = 0.2
+
     """Representa las coordenadas (x, y) de un vértice de un primitivo geométrico."""
     def __init__(self, name, value, max_coords):
-        super().__init__(name, value, (0,0), max_coords)
+        # Permitir que la coordenada este fuera de los límites, pero no demasiado
+        min_coords = [0, 0]
+        min_coords[0] = 0 - max_coords[0] * self.bounds_extension
+        min_coords[1] = 0 - max_coords[1] * self.bounds_extension
+
+        max_coords = list(max_coords)
+        max_coords[0] = max_coords[0] + max_coords[0] * self.bounds_extension
+        max_coords[1] = max_coords[1] + max_coords[1] * self.bounds_extension
+
+        super().__init__(name, value, min_coords, max_coords)
 
     def mutate(self, max_percent=0.2):
         if random_generator.random() < 0.5:
@@ -54,6 +65,7 @@ class VertexCoordinateAttribute(GeneticAttribute):
 
     def _mutate_coordinate(self, coord_index, max_percent):
         current_coord = self.value[coord_index]
+
         min_coord = self.min_val[coord_index]
         max_coord = self.max_val[coord_index]
 
