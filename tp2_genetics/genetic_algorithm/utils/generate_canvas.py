@@ -3,7 +3,7 @@ from .create_individuals import create_initial_population # Nombre de función a
 from genetic_algorithm.models.individual_solution import IndividualSolution, GeometricPrimitive # Nuevas importaciones (corregida)
 
 def render_solution_to_image(solution: IndividualSolution, width=500, height=500):
-    image = Image.new('RGBA', (width, height), (255, 255, 255, 255)) # Canvas blanco inicial
+    image = Image.new('RGB', (width, height), (255, 255, 255, 255)) # Canvas blanco inicial
 
     for primitive in solution.primitives:
         draw = ImageDraw.Draw(image, 'RGBA')
@@ -14,9 +14,7 @@ def render_solution_to_image(solution: IndividualSolution, width=500, height=500
 
         draw.polygon(vertices, fill=(r, g, b, alpha))
 
-    # Convertir a RGB para la salida final si es necesario (sin canal alfa)
-    image_rgb = image.convert('RGB')
-    return image_rgb
+    return image
 
 if __name__ == "__main__":
     # Ejemplo de uso con los nuevos nombres

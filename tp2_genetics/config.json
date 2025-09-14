@@ -1,12 +1,14 @@
 {
-    "target_image_path": "./images/jamaica.jpg",
+    "target_image_path": "./images/noche_estrellada.jpg",
     "initial_population_size": 100,
-    "triangles_per_solution": 90,
+    "triangles_per_solution": 100,
     "recombination_probability": 0.5,
-    "mutations": "single",
-    "mutation_probability": 0.6,
-    "rounds": 3,
-    "parents_selection_percentage": 0.5,
-    "selection_algorithm": "tournament_deterministic",
-    "crossover_algorithm": "one_point"
+    "mutation_probability": 0.8,
+    "mutation_delta_percent": 0.1,
+    "rounds": 10000,
+    "parents_selection_percentage": 0.4,
+    "young_bias": true,
+    "selection_algorithm": "boltzmann",
+    "crossover_algorithm": "one_point",
+    "mutation_algorithm": "limited_multi"
 }

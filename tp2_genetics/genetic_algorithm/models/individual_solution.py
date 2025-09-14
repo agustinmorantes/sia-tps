@@ -51,6 +51,12 @@ class IndividualSolution:
     def __hash__(self):
         return hash(self.id)
 
+    def __eq__(self, other):
+        if not isinstance(other, IndividualSolution):
+            return NotImplemented
+
+        return self.id == other.id
+
     def add_primitive(self, primitive: GeometricPrimitive):
         self.primitives.append(primitive)
         self.chromosome.extend(primitive.genes)

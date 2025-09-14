@@ -32,6 +32,9 @@ if __name__ == "__main__":
     parents_selection_percentage = config.get("parents_selection_percentage")
     selection_algorithm_name = config.get("selection_algorithm")
     crossover_algorithm_name = config.get("crossover_algorithm")
+    mutation_algorithm_name = config.get("mutation_algorithm")
+    mutation_delta_percent = config.get("mutation_delta_percent")
+    young_bias = bool(config.get("young_bias", True))
 
     optional_params = {}
     if selection_algorithm_name in SELECTION_OPTIONAL_PARAMS:
@@ -60,9 +63,12 @@ if __name__ == "__main__":
         primitives_per_solution,
         recombination_probability,
         mutation_probability,
+        young_bias,
         selection_algorithm_name,
         crossover_algorithm_name,
-        **optional_params 
+        mutation_algorithm_name,
+        mutation_delta_percent,
+        **optional_params
     )
 
     final_image = render_solution_to_image(best_solution)

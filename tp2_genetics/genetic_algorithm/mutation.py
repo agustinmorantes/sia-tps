@@ -1,18 +1,59 @@
+from abc import abstractmethod, ABC
+
 from genetic_algorithm.models.individual_solution import IndividualSolution
 from genetic_algorithm.utils.random_seed_manager import central_random_generator as random_generator # Importación del generador centralizado
 from typing import List
 
-class GeneModifier:
-    """Gestiona la aplicación de mutaciones a los genes de las soluciones individuales."""
-    def __init__(self, modification_rate: float, shapes_per_solution: int):
-        self.modification_rate = modification_rate # Renombrado
-        self.shapes_per_solution = shapes_per_solution # Renombrado
+class MutationStrategy(ABC):
+    def __init__(self, probability: float, mutation_percent: float = 0.2):
+        self.probability = probability
+        self.mutation_percent = mutation_percent
 
-    def apply_mutations(self, target_population: List[IndividualSolution]): # Renombrado de método y parámetro
-        for current_solution in target_population: # Renombrado de variable de bucle
-            random_mutation_chance = random_generator.random() # Renombrado
-            if random_mutation_chance < self.modification_rate:
-                gene_to_modify_index = random_generator.randint(0, len(current_solution.chromosome)-1) # Renombrado
-                attribute_to_modify = current_solution.chromosome[gene_to_modify_index] # Renombrado
-                attribute_to_modify.mutate(percent=0.2)  # Porcentaje de mutación (change_magnitude)
-                current_solution.update_primitive_from_gene(attribute_to_modify, gene_to_modify_index)
+    @abstractmethod
+    def apply_mutations(self, solution: IndividualSolution):
+        pass
+
+    def apply_mutations_to_population(self, population: List[IndividualSolution]):
+        for individual in population:
+            self.apply_mutations(individual)
+
+class GeneMutationStrategy(MutationStrategy):
+    def apply_mutations(self, solution: IndividualSolution): # Renombrado de método y parámetro
+        random_mutation_chance = random_generator.random()
+        if random_mutation_chance < self.probability:
+            gene_to_modify_index = random_generator.randint(0, len(solution.chromosome)-1)
+            attribute_to_modify = solution.chromosome[gene_to_modify_index]
+            attribute_to_modify.mutate(percent=self.mutation_percent)
+            solution.update_primitive_from_gene(attribute_to_modify, gene_to_modify_index)
+
+class LimitedMultigeneMutationStrategy(MutationStrategy):
+    def __init__(self, probability: float, mutation_percent: float = 0.2, max_gene_percent_to_modify: float = 0.05):
+        super().__init__(probability, mutation_percent)
+        self.max_gene_percent_to_modify = max_gene_percent_to_modify
+
+    def apply_mutations(self, solution: IndividualSolution): # Renombrado de método y parámetro
+        if random_generator.random() >= self.probability:
+            return
+
+        # Mezclo los índices
+        indices = list(range(len(solution.chromosome)))
+        random_generator.shuffle(indices)
+
+        # Cantidad aleatoria de genes para modificar
+        n = random_generator.randint(1, len(solution.chromosome) * self.max_gene_percent_to_modify)
+
+        # Tomo los primeros n indices
+        selected_indices = indices[:n]
+
+        for index in selected_indices:
+            attribute_to_modify = solution.chromosome[index]
+            attribute_to_modify.mutate(percent=self.mutation_percent)
+            solution.update_primitive_from_gene(attribute_to_modify, index)
+
+def get_mutation_strategy(strategy_name: str, probability: float, mutation_percent: float = 0.2) -> MutationStrategy:
+    if strategy_name == "single":
+        return GeneMutationStrategy(probability, mutation_percent)
+    elif strategy_name == "limited_multi":
+        return LimitedMultigeneMutationStrategy(probability, mutation_percent)
+    else:
+        raise ValueError(f"Estrategia de mutación desconocida: {strategy_name}")
