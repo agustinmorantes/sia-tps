@@ -28,12 +28,16 @@ if __name__ == "__main__":
     recombination_probability = config.get("recombination_probability")
     mutations = config.get("mutations")
     mutation_probability = config.get("mutation_probability")
-    rounds = config.get("rounds")
+    gen_cutoff = config.get("gen_cutoff")
     parents_selection_percentage = config.get("parents_selection_percentage")
     selection_algorithm_name = config.get("selection_algorithm")
     crossover_algorithm_name = config.get("crossover_algorithm")
     mutation_algorithm_name = config.get("mutation_algorithm")
     mutation_delta_percent = config.get("mutation_delta_percent")
+    fitness_cutoff = config.get("fitness_cutoff", 1.0)
+    minutes_cutoff = config.get("minutes_cutoff")
+    no_change_gens_cutoff = config.get("no_change_gens_cutoff")
+    progress_saving = bool(config.get("progress_saving", True))
     young_bias = bool(config.get("young_bias", True))
 
     optional_params = {}
@@ -55,7 +59,7 @@ if __name__ == "__main__":
     initial_solutions = create_initial_population(initial_population_size, primitives_per_solution)
 
     evolutionary_approximator = EvolutionaryImageApproximator(
-        fitness_calculator, target_image, initial_population_size, rounds, parents_selection_percentage, mutations
+        fitness_calculator, target_image, initial_population_size, gen_cutoff, parents_selection_percentage, mutations
     )
 
     best_solution, fitness_value, generation_number = evolutionary_approximator.run(
@@ -68,13 +72,17 @@ if __name__ == "__main__":
         crossover_algorithm_name,
         mutation_algorithm_name,
         mutation_delta_percent,
-        **optional_params
+        fitness_cutoff,
+        minutes_cutoff,
+        no_change_gens_cutoff,
+        progress_saving,
+        **optional_params,
     )
 
     final_image = render_solution_to_image(best_solution)
     final_image.save(
         f"outputs/{img_name}_p{initial_population_size}_t{primitives_per_solution}"
-        f"_rec{recombination_probability}_prob_mut{mutation_probability}_r{rounds}"
+        f"_rec{recombination_probability}_prob_mut{mutation_probability}_r{gen_cutoff}"
         f"_mut{mutations}_sel{selection_algorithm_name}_cross{crossover_algorithm_name}"
         f"_parents{parents_selection_percentage}_fitness{fitness_value}.png"
     )

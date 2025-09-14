@@ -1,28 +1,37 @@
 import copy
+import os
 import time
+import shutil
 from typing import List, Tuple
 
 from genetic_algorithm.crossover import OnePointCrossover, TwoPointsCrossover, CrossoverStrategy
 from genetic_algorithm.models.individual_solution import IndividualSolution
 from genetic_algorithm.mutation import get_mutation_strategy
 from genetic_algorithm.selection_algorithms.selection_strategies import get_selection_strategy
+from genetic_algorithm.utils.generate_canvas import render_solution_to_image
 from genetic_algorithm.utils.random_seed_manager import central_random_generator as random_generator
 
 
 class EvolutionaryImageApproximator:
     """Implementa el algoritmo genético para aproximar una imagen con formas geométricas."""
-    def __init__(self, similarity_evaluator, reference_image, initial_population_count=50, rounds=200, parents_selection_percentage=0.25, mutation_gens="single"):
+    def __init__(self, similarity_evaluator, reference_image, initial_population_count=50, gen_cutoff=200, parents_selection_percentage=0.25, mutation_gens="single"):
         self.current_population: List[IndividualSolution] = []
         self.initial_population_count = initial_population_count
         self.best_solution_found: IndividualSolution = None
         self.similarity_evaluator = similarity_evaluator
-        self.rounds = rounds
+        self.gen_cutoff = gen_cutoff
         self.max_fitness = 0
         self.generation_number = 0
+        self.best_solution_gen = 0
         self.reference_image = reference_image
         self.parents_selection_percentage = parents_selection_percentage
         self.mutation_gens = mutation_gens
         self.fitness_cache = {}
+
+        if os.path.exists("outputs/progress"):
+            shutil.rmtree("outputs/progress")
+        os.makedirs("outputs/progress", exist_ok=True)
+
 
     def calculate_population_fitness(self, population: List[IndividualSolution]) -> Tuple[List[float], float, IndividualSolution]:
         fitness_values = []
@@ -45,6 +54,13 @@ class EvolutionaryImageApproximator:
 
         return fitness_values, best_fitness_value, best_solution
 
+    @staticmethod
+    def save_solution_image(solution: IndividualSolution, generation: int):
+        final_image = render_solution_to_image(solution)
+        final_image.save(
+            f"outputs/progress/gen_{generation}.png"
+        )
+
     def run(
             self, 
             initial_solution_set: List[IndividualSolution], 
@@ -56,6 +72,10 @@ class EvolutionaryImageApproximator:
             crossover_method_name: str ="one_point",
             mutation_algorithm_name: str ="limited_multi",
             mutation_delta_percent: float = 0.2,
+            fitness_cutoff: float = 1.0,
+            minutes_cutoff: float = 120,
+            no_change_gens_cutoff: int = 500,
+            progress_saving: bool = True,
             **selection_params
         ) -> Tuple[IndividualSolution, float, int]:
 
@@ -77,15 +97,32 @@ class EvolutionaryImageApproximator:
 
         start_time = time.time()
         try:
-            while self.generation_number <= self.rounds and self.max_fitness < 1.0:
+            while self.generation_number <= self.gen_cutoff and self.max_fitness < fitness_cutoff:
                 fitness_values, generation_max_fitness, best_current_solution = self.calculate_population_fitness(self.current_population)
 
                 if generation_max_fitness > self.max_fitness:
                     self.max_fitness = generation_max_fitness
                     self.best_solution_found = copy.deepcopy(best_current_solution)
+                    self.best_solution_gen = self.generation_number
+
+                    if self.max_fitness >= fitness_cutoff:
+                        print("Fitness cutoff reached. Stopping the algorithm.")
+                        break
+
+                    if progress_saving:
+                        self.save_solution_image(self.best_solution_found, self.generation_number)
+
+                if self.generation_number - self.best_solution_gen >= no_change_gens_cutoff:
+                    print(f"No improvement in fitness for {no_change_gens_cutoff} generations. Stopping the algorithm.")
+                    break
 
                 elapsed = time.time() - start_time
                 mins, secs = divmod(int(elapsed), 60)
+
+                if mins >= minutes_cutoff:
+                    print(f"Time cutoff of {minutes_cutoff} minutes reached. Stopping the algorithm.")
+                    break
+
                 print(f"Generation: {self.generation_number}, Max fitness: {self.max_fitness}, Time: {mins:02d}:{secs:02d}")
 
                 selected_parents = selection_strategy.select(k_size, self.current_population, self.fitness_cache, self.generation_number)
