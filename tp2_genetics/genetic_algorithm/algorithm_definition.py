@@ -71,7 +71,7 @@ class EvolutionaryImageApproximator:
             selection_algorithm_name: str ="elite",
             crossover_method_name: str ="one_point",
             mutation_algorithm_name: str ="limited_multi",
-            mutation_delta_percent: float = 0.2,
+            mutation_delta_max_percent: float = 0.2,
             fitness_cutoff: float = 1.0,
             minutes_cutoff: float = 120,
             no_change_gens_cutoff: int = 500,
@@ -84,7 +84,7 @@ class EvolutionaryImageApproximator:
         k_size = int(self.parents_selection_percentage * self.initial_population_count)
         
         selection_strategy = get_selection_strategy(selection_algorithm_name, selection_params)
-        mutation_strategy = get_mutation_strategy(mutation_algorithm_name, mutation_probability, mutation_delta_percent)
+        mutation_strategy = get_mutation_strategy(mutation_algorithm_name, mutation_probability, mutation_delta_max_percent)
 
         # Las clases OnePointCrossover y TwoPointsCrossover reciben primitives_per_solution en su init
         crossover_strategy: CrossoverStrategy # Instanciar directamente la estrategia

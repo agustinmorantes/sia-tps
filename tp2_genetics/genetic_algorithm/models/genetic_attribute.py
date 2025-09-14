@@ -36,8 +36,8 @@ class RGBComponentAttribute(GeneticAttribute):
     def __init__(self, name, value):
         super().__init__(name, value, 0, 255)
 
-    def mutate(self, percent=0.2):
-        delta = round((self.max_val - self.min_val) * percent * self.COLOR_SENSITIVITY[self.name])
+    def mutate(self, max_percent=0.2):
+        delta = round((self.max_val - self.min_val) * max_percent * self.COLOR_SENSITIVITY[self.name])
         new_value = random_generator.randint(self.value - delta, self.value + delta)
         self.value = max(self.min_val, min(self.max_val, new_value))
 
@@ -46,18 +46,18 @@ class VertexCoordinateAttribute(GeneticAttribute):
     def __init__(self, name, value, max_coords):
         super().__init__(name, value, (0,0), max_coords)
 
-    def mutate(self, percent=0.2):
+    def mutate(self, max_percent=0.2):
         if random_generator.random() < 0.5:
-            self._mutate_coordinate(0, percent)
+            self._mutate_coordinate(0, max_percent)
         else:
-            self._mutate_coordinate(1, percent)
+            self._mutate_coordinate(1, max_percent)
 
-    def _mutate_coordinate(self, coord_index, percent):
+    def _mutate_coordinate(self, coord_index, max_percent):
         current_coord = self.value[coord_index]
         min_coord = self.min_val[coord_index]
         max_coord = self.max_val[coord_index]
 
-        delta = (max_coord - min_coord) * percent
+        delta = (max_coord - min_coord) * max_percent
         new_coord = random_generator.uniform(current_coord - delta, current_coord + delta)
         new_coord = max(min_coord, min(max_coord, new_coord))
         

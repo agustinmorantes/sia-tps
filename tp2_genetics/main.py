@@ -33,7 +33,7 @@ if __name__ == "__main__":
     selection_algorithm_name = config.get("selection_algorithm")
     crossover_algorithm_name = config.get("crossover_algorithm")
     mutation_algorithm_name = config.get("mutation_algorithm")
-    mutation_delta_percent = config.get("mutation_delta_percent")
+    mutation_delta_max_percent = config.get("mutation_delta_max_percent")
     fitness_cutoff = config.get("fitness_cutoff", 1.0)
     minutes_cutoff = config.get("minutes_cutoff")
     no_change_gens_cutoff = config.get("no_change_gens_cutoff")
@@ -71,7 +71,7 @@ if __name__ == "__main__":
         selection_algorithm_name,
         crossover_algorithm_name,
         mutation_algorithm_name,
-        mutation_delta_percent,
+        mutation_delta_max_percent,
         fitness_cutoff,
         minutes_cutoff,
         no_change_gens_cutoff,

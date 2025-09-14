@@ -1,18 +1,18 @@
 {
     "target_image_path": "./images/noche_estrellada.jpg",
-    "initial_population_size": 50,
-    "triangles_per_solution": 30,
-    "recombination_probability": 0.8,
-    "mutation_probability": 0.4,
-    "mutation_delta_percent": 0.2,
+    "initial_population_size": 500,
+    "triangles_per_solution": 50,
+    "recombination_probability": 0.6,
+    "mutation_probability": 0.5,
+    "mutation_delta_max_percent": 0.6,
     "parents_selection_percentage": 0.3,
     "gen_cutoff": 10000,
-    "fitness_cutoff": 0.9,
+    "fitness_cutoff": 0.99,
     "minutes_cutoff": 30,
-    "no_change_gens_cutoff": 500,
+    "no_change_gens_cutoff": 1000,
     "young_bias": true,
     "progress_saving": true,
     "selection_algorithm": "elite",
     "crossover_algorithm": "one_point",
-    "mutation_algorithm": "limited_multi"
+    "mutation_algorithm": "single"
 }

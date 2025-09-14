@@ -23,7 +23,7 @@ class GeneMutationStrategy(MutationStrategy):
         if random_mutation_chance < self.probability:
             gene_to_modify_index = random_generator.randint(0, len(solution.chromosome)-1)
             attribute_to_modify = solution.chromosome[gene_to_modify_index]
-            attribute_to_modify.mutate(percent=self.mutation_percent)
+            attribute_to_modify.mutate(max_percent=self.mutation_percent)
             solution.update_primitive_from_gene(attribute_to_modify, gene_to_modify_index)
 
 class LimitedMultigeneMutationStrategy(MutationStrategy):
@@ -47,7 +47,7 @@ class LimitedMultigeneMutationStrategy(MutationStrategy):
 
         for index in selected_indices:
             attribute_to_modify = solution.chromosome[index]
-            attribute_to_modify.mutate(percent=self.mutation_percent)
+            attribute_to_modify.mutate(max_percent=self.mutation_percent)
             solution.update_primitive_from_gene(attribute_to_modify, index)
 
 def get_mutation_strategy(strategy_name: str, probability: float, mutation_percent: float = 0.2) -> MutationStrategy:
