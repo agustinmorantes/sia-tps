@@ -1,3 +1,6 @@
+import shutil
+import sys
+
 from genetic_algorithm.algorithm_definition import EvolutionaryImageApproximator
 from genetic_algorithm.utils.generate_canvas import render_solution_to_image
 from genetic_algorithm.fitness import ImageSimilarityEvaluator # Importación corregida
@@ -15,12 +18,22 @@ SELECTION_OPTIONAL_PARAMS = {
 }
 
 if __name__ == "__main__":
-    if not os.path.exists("outputs"):
-        os.makedirs("outputs")
+    config_path = "./config.json"
+    if len(sys.argv) > 1:
+        config_path = sys.argv[1]
+        if not os.path.exists(config_path):
+            raise FileNotFoundError(f"El archivo de configuración '{config_path}' no existe.")
 
-
-    with open("config.json", 'r') as config_file:
+    with open(config_path, 'r') as config_file:
         config = json.load(config_file)
+
+    config_filename = os.path.splitext(os.path.basename(config_path))[0]
+    output_dir = os.path.join("outputs", config_filename)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    else:
+        shutil.rmtree(output_dir)
+        os.makedirs(output_dir)
 
     target_image_path = config.get("target_image_path")
     initial_population_size = config.get("initial_population_size")
@@ -59,7 +72,8 @@ if __name__ == "__main__":
     initial_solutions = create_initial_population(initial_population_size, primitives_per_solution)
 
     evolutionary_approximator = EvolutionaryImageApproximator(
-        fitness_calculator, target_image, initial_population_size, gen_cutoff, parents_selection_percentage, mutations
+        fitness_calculator, target_image, initial_population_size, gen_cutoff, parents_selection_percentage, mutations,
+        output_dir
     )
 
     best_solution, fitness_value, generation_number = evolutionary_approximator.run(
@@ -81,7 +95,7 @@ if __name__ == "__main__":
 
     final_image = render_solution_to_image(best_solution)
     final_image.save(
-        f"outputs/{img_name}_p{initial_population_size}_t{primitives_per_solution}"
+        f"{output_dir}/{img_name}_p{initial_population_size}_t{primitives_per_solution}"
         f"_rec{recombination_probability}_prob_mut{mutation_probability}_r{gen_cutoff}"
         f"_mut{mutations}_sel{selection_algorithm_name}_cross{crossover_algorithm_name}"
         f"_parents{parents_selection_percentage}_fitness{fitness_value}.png"

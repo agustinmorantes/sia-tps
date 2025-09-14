@@ -14,7 +14,7 @@ from genetic_algorithm.utils.random_seed_manager import central_random_generator
 
 class EvolutionaryImageApproximator:
     """Implementa el algoritmo genético para aproximar una imagen con formas geométricas."""
-    def __init__(self, similarity_evaluator, reference_image, initial_population_count=50, gen_cutoff=200, parents_selection_percentage=0.25, mutation_gens="single"):
+    def __init__(self, similarity_evaluator, reference_image, initial_population_count=50, gen_cutoff=200, parents_selection_percentage=0.25, mutation_gens="single", output_dir="outputs"):
         self.current_population: List[IndividualSolution] = []
         self.initial_population_count = initial_population_count
         self.best_solution_found: IndividualSolution = None
@@ -27,10 +27,12 @@ class EvolutionaryImageApproximator:
         self.parents_selection_percentage = parents_selection_percentage
         self.mutation_gens = mutation_gens
         self.fitness_cache = {}
+        self.output_dir = output_dir
+        self.progress_dir = os.path.join(output_dir, "progress")
 
-        if os.path.exists("outputs/progress"):
-            shutil.rmtree("outputs/progress")
-        os.makedirs("outputs/progress", exist_ok=True)
+        if os.path.exists(self.progress_dir):
+            shutil.rmtree(self.progress_dir)
+        os.makedirs(self.progress_dir, exist_ok=True)
 
 
     def calculate_population_fitness(self, population: List[IndividualSolution]) -> Tuple[List[float], float, IndividualSolution]:
@@ -54,11 +56,10 @@ class EvolutionaryImageApproximator:
 
         return fitness_values, best_fitness_value, best_solution
 
-    @staticmethod
-    def save_solution_image(solution: IndividualSolution, generation: int):
+    def save_solution_image(self, solution: IndividualSolution, generation: int):
         final_image = render_solution_to_image(solution)
         final_image.save(
-            f"outputs/progress/gen_{generation}.png"
+            os.path.join(self.progress_dir, f"gen_{generation}.png"),
         )
 
     def run(

@@ -1,0 +1,19 @@
+{
+    "target_image_path": "./images/jamaica.jpg",
+    "output_dir": "./outputs/config1/",
+    "initial_population_size": 200,
+    "triangles_per_solution": 30,
+    "recombination_probability": 0.8,
+    "mutation_probability": 0.6,
+    "mutation_delta_max_percent": 0.6,
+    "parents_selection_percentage": 0.3,
+    "gen_cutoff": 10000,
+    "fitness_cutoff": 0.99,
+    "minutes_cutoff": 30,
+    "no_change_gens_cutoff": 200,
+    "young_bias": true,
+    "progress_saving": true,
+    "selection_algorithm": "elite",
+    "crossover_algorithm": "one_point",
+    "mutation_algorithm": "single"
+}
