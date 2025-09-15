@@ -17,7 +17,7 @@ class EvolutionaryImageApproximator:
     def __init__(self, similarity_evaluator, reference_image, initial_population_count=50, gen_cutoff=200, parents_selection_percentage=0.25, mutation_gens="single", output_dir="outputs"):
         self.current_population: List[IndividualSolution] = []
         self.initial_population_count = initial_population_count
-        self.best_solution_found: IndividualSolution = None
+        self.best_solution_found: IndividualSolution | None = None
         self.similarity_evaluator = similarity_evaluator
         self.gen_cutoff = gen_cutoff
         self.max_fitness = 0
@@ -78,7 +78,9 @@ class EvolutionaryImageApproximator:
             no_change_gens_cutoff: int = 500,
             progress_saving: bool = True,
             **selection_params
-        ) -> Tuple[IndividualSolution, float, int]:
+        ) -> Tuple[IndividualSolution, float, int, str, list[dict]]:
+
+        gen_metrics = []
 
         self.current_population = initial_solution_set
 
@@ -97,17 +99,28 @@ class EvolutionaryImageApproximator:
             raise ValueError(f"Método de cruce desconocido: {crossover_method_name}")
 
         start_time = time.time()
+        cutoff_reason = "gen_cutoff"
         try:
-            while self.generation_number <= self.gen_cutoff and self.max_fitness < fitness_cutoff:
+            while self.generation_number <= self.gen_cutoff:
                 fitness_values, generation_max_fitness, best_current_solution = self.calculate_population_fitness(self.current_population)
 
+                gen_metrics.append({
+                    "generation": self.generation_number,
+                    "max_fitness": generation_max_fitness,
+                    "average_fitness": sum(fitness_values) / len(fitness_values),
+                    "min_fitness": min(fitness_values),
+                    "population_size": len(self.current_population),
+                    "time_elapsed": time.time() - start_time,
+                })
+
                 if generation_max_fitness > self.max_fitness:
-                    self.max_fitness = generation_max_fitness
-                    self.best_solution_found = copy.deepcopy(best_current_solution)
+                    self.max_fitness: float = generation_max_fitness
+                    self.best_solution_found: IndividualSolution = copy.deepcopy(best_current_solution)
                     self.best_solution_gen = self.generation_number
 
                     if self.max_fitness >= fitness_cutoff:
                         print("Fitness cutoff reached. Stopping the algorithm.")
+                        cutoff_reason = "fitness_cutoff"
                         break
 
                     if progress_saving:
@@ -115,6 +128,7 @@ class EvolutionaryImageApproximator:
 
                 if self.generation_number - self.best_solution_gen >= no_change_gens_cutoff:
                     print(f"No improvement in fitness for {no_change_gens_cutoff} generations. Stopping the algorithm.")
+                    cutoff_reason = "no_change_gens_cutoff"
                     break
 
                 elapsed = time.time() - start_time
@@ -122,6 +136,7 @@ class EvolutionaryImageApproximator:
 
                 if mins >= minutes_cutoff:
                     print(f"Time cutoff of {minutes_cutoff} minutes reached. Stopping the algorithm.")
+                    cutoff_reason = "time_cutoff"
                     break
 
                 print(f"Generation: {self.generation_number}, Max fitness: {self.max_fitness}, Time: {mins:02d}:{secs:02d}")
@@ -167,4 +182,4 @@ class EvolutionaryImageApproximator:
 
         print(self.max_fitness)
         print(self.similarity_evaluator(self.best_solution_found))
-        return self.best_solution_found, self.max_fitness, self.generation_number
+        return self.best_solution_found, self.max_fitness, self.generation_number, cutoff_reason, gen_metrics

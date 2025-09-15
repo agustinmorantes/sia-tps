@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     start_time = time.time()
 
-    best_solution, fitness_value, generation_number = evolutionary_approximator.run(
+    best_solution, fitness_value, generation_number, cutoff_reason, gen_metrics = evolutionary_approximator.run(
         initial_solutions,
         primitives_per_solution,
         recombination_probability,
@@ -105,6 +105,11 @@ if __name__ == "__main__":
         "fitness": fitness_value,
         "generations": generation_number,
         "runtime_seconds": runtime_seconds,
+        "cutoff_reason": cutoff_reason,
+        "gen_metrics": gen_metrics,
     }
+
+    with open(os.path.join(output_dir, "metrics.json"), "w") as solution_file:
+        json.dump(final_output, solution_file)
 
     print(f"The best result was found on generation {generation_number} with a fitness value of: {fitness_value}")
