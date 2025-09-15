@@ -1,5 +1,6 @@
 import shutil
 import sys
+import time
 
 from genetic_algorithm.algorithm_definition import EvolutionaryImageApproximator
 from genetic_algorithm.utils.generate_canvas import render_solution_to_image
@@ -76,6 +77,8 @@ if __name__ == "__main__":
         output_dir
     )
 
+    start_time = time.time()
+
     best_solution, fitness_value, generation_number = evolutionary_approximator.run(
         initial_solutions,
         primitives_per_solution,
@@ -93,12 +96,15 @@ if __name__ == "__main__":
         **optional_params,
     )
 
+    runtime_seconds = time.time() - start_time
+
     final_image = render_solution_to_image(best_solution)
-    final_image.save(
-        f"{output_dir}/{img_name}_p{initial_population_size}_t{primitives_per_solution}"
-        f"_rec{recombination_probability}_prob_mut{mutation_probability}_r{gen_cutoff}"
-        f"_mut{mutations}_sel{selection_algorithm_name}_cross{crossover_algorithm_name}"
-        f"_parents{parents_selection_percentage}_fitness{fitness_value}.png"
-    )
+    final_image.save(os.path.join(output_dir, "solution.png"))
+
+    final_output = {
+        "fitness": fitness_value,
+        "generations": generation_number,
+        "runtime_seconds": runtime_seconds,
+    }
 
     print(f"The best result was found on generation {generation_number} with a fitness value of: {fitness_value}")

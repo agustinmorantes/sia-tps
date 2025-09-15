@@ -1,6 +1,6 @@
 {
     "target_image_path": "./images/jamaica.jpg",
-    "initial_population_size": 200,
+    "initial_population_size": 100,
     "triangles_per_solution": 30,
     "recombination_probability": 0.8,
     "mutation_probability": 0.6,
@@ -12,7 +12,7 @@
     "no_change_gens_cutoff": 200,
     "young_bias": true,
     "progress_saving": true,
-    "selection_algorithm": "elite",
+    "selection_algorithm": "boltzmann",
     "crossover_algorithm": "one_point",
     "mutation_algorithm": "single"
 }

@@ -113,7 +113,7 @@ class RankingSelection(SelectionStrategy):
         return selected_individuals
 
 class BoltzmannSelection(SelectionStrategy):
-    def __init__(self, temperature: float = 1.0):
+    def __init__(self, temperature: float = 0.01):
         super().__init__()
         self.temperature = temperature
 
@@ -121,11 +121,11 @@ class BoltzmannSelection(SelectionStrategy):
         num_values = []
         for ind in population:
             fit = fitness_cache[hash(ind)]
-            # Min is for avoiding overflow error when fit is big and temperature is too tiny
-            num_val = math.exp(min(fit / self.temperature, 700))
+            num_val = math.exp(fit / self.temperature)
             num_values.append((num_val, ind))
 
-        avg_val = sum(num_val for num_val, _ in num_values) / len(num_values)
+        pop_len = len(population)
+        avg_val = sum(num_val / pop_len for num_val, _ in num_values)
 
         if avg_val == 0:
             return random_generator.choices(population, k=size)
@@ -149,7 +149,7 @@ class BoltzmannSelection(SelectionStrategy):
         return selected_individuals
 
 class BoltzmannAnnealingSelection(SelectionStrategy):
-    def __init__(self, t0: float = 10.0, tc: float = 1.0, k: float = 0.01):
+    def __init__(self, t0: float = 0.2, tc: float = 0.01, k: float = 0.003):
         super().__init__()
         self.t0 = t0
         self.tc = tc
@@ -223,8 +223,8 @@ class TournamentDeterministicSelection(TournamentSelection):
 
         
 class TournamentProbabilisticSelection(TournamentSelection):
-    def __init__(self, tournament_size=2, threshold=0.5):
-        super().__init__(tournament_size)
+    def __init__(self, threshold=0.5):
+        super().__init__(tournament_size=2)
         self.threshold = threshold
             
     def select(self, size: int, population: List[IndividualSolution], fitness_cache: dict, generation: int) -> List[IndividualSolution]:
@@ -252,32 +252,31 @@ def get_selection_strategy(selection_algorithm_name: str, selection_params: dict
     elif selection_algorithm_name == "universal":
         return UniversalSelection()
     elif selection_algorithm_name == "tournament_deterministic":
-        tournament_size = selection_params.get("tournament_size", None)
+        tournament_size: int | None = selection_params.get("tournament_size", None)
         if tournament_size is not None:
             return TournamentDeterministicSelection(tournament_size=tournament_size)
         else:
             return TournamentDeterministicSelection()
     elif selection_algorithm_name == "tournament_probabilistic":
-        tournament_size = selection_params.get("tournament_size", None)
-        tournament_threshold = selection_params.get("tournament_threshold", None)
-        if tournament_size is not None and tournament_threshold is not None:
+        tournament_threshold: float | None = selection_params.get("tournament_threshold", None)
+        if tournament_threshold is not None:
             return TournamentProbabilisticSelection(
-                tournament_size=tournament_size, threshold=tournament_threshold
+                threshold=tournament_threshold
             )
         else:
             return TournamentProbabilisticSelection()
     elif selection_algorithm_name == "ranking":
         return RankingSelection()
     elif selection_algorithm_name == "boltzmann":
-        boltzmann_temperature = selection_params.get("boltzmann_temperature", None)
+        boltzmann_temperature: float | None = selection_params.get("boltzmann_temperature", None)
         if boltzmann_temperature is not None:
             return BoltzmannSelection(temperature=boltzmann_temperature)
         else:
             return BoltzmannSelection()
     elif selection_algorithm_name == "boltzmann_annealing":
-        boltzmann_t0 = selection_params.get("boltzmann_t0", None)
-        boltzmann_tc = selection_params.get("boltzmann_tc", None)
-        boltzmann_k = selection_params.get("boltzmann_k", None)
+        boltzmann_t0: float | None = selection_params.get("boltzmann_t0", None)
+        boltzmann_tc: float | None = selection_params.get("boltzmann_tc", None)
+        boltzmann_k: float | None = selection_params.get("boltzmann_k", None)
         if boltzmann_t0 is not None and boltzmann_tc is not None and boltzmann_k is not None:
             return BoltzmannAnnealingSelection(t0=boltzmann_t0, tc=boltzmann_tc, k=boltzmann_k)
         else:
