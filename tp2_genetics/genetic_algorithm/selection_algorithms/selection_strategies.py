@@ -17,7 +17,7 @@ class EliteSelection(SelectionStrategy):
         for individual in population:
             counter += 1
             individual_hash = hash(individual)
-            hp.heappush(fitness_priority_queue, (-fitness_cache[individual_hash], counter, individual))
+            hp.heappush(fitness_priority_queue, (-fitness_cache[individual_hash], counter, individual)) #Para seleccionar a los individuos con el mayor fitness, se inserta el fitness negado
         
         best_individuals = []
         for _ in range(size):
@@ -38,12 +38,12 @@ class RouletteSelection(SelectionStrategy):
         fitness_values_list = []
         for ind in population:
             individual_hash = hash(ind)
-            fitness_values_list.append((fitness_cache[individual_hash], ind))
+            fitness_values_list.append((fitness_cache[individual_hash], ind))#lista donde cada elemento es una tupla (fitness_del_individuo, objeto_individuo)
         
-        selection_probs = [item[0] / total_fitness for item in fitness_values_list]
+        selection_probs = [item[0] / total_fitness for item in fitness_values_list] #calcula los "tamaños de las porciones de la ruleta", es una lista de probabilidades de seleccion
         selected_individuals = []
         
-        for _ in range(size):
+        for _ in range(size): #size es el numero de individuos a seleccionar
             random_value = random_generator.random()
             current_prob = 0
             for i in range(len(population)):

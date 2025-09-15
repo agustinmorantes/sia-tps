@@ -17,7 +17,7 @@ class MutationStrategy(ABC):
         for individual in population:
             self.apply_mutations(individual)
 
-class GeneMutationStrategy(MutationStrategy):
+class GeneMutationStrategy(MutationStrategy): #Mutacion de un solo gen 
     def apply_mutations(self, solution: IndividualSolution): # Renombrado de método y parámetro
         random_mutation_chance = random_generator.random()
         if random_mutation_chance < self.probability:
@@ -26,7 +26,7 @@ class GeneMutationStrategy(MutationStrategy):
             attribute_to_modify.mutate(max_percent=self.mutation_percent)
             solution.update_primitive_from_gene(attribute_to_modify, gene_to_modify_index)
 
-class LimitedMultigeneMutationStrategy(MutationStrategy):
+class LimitedMultigeneMutationStrategy(MutationStrategy): #Mutacion limitada de multiples genes 
     def __init__(self, probability: float, mutation_percent: float = 0.2, max_gene_percent_to_modify: float = 0.05):
         super().__init__(probability, mutation_percent)
         self.max_gene_percent_to_modify = max_gene_percent_to_modify
