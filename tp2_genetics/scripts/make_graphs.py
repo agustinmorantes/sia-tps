@@ -223,20 +223,29 @@ if __name__ == "__main__":
     # ---------------------------------------------------
     plt.figure(figsize=(14, 8))
 
+    # Remove 'tournament probabilistic high threshold' from tradeoff graph data
+    exclude_label = 'Tournament Probabilistic High Threshold'
+    filtered_indices = [i for i, label in enumerate(config_labels) if label != exclude_label]
+    filtered_fitness_means = [fitness_means[i] for i in filtered_indices]
+    filtered_fitness_stds = [fitness_stds[i] for i in filtered_indices]
+    filtered_runtime_means = [runtime_means[i] for i in filtered_indices]
+    filtered_runtime_stds = [runtime_stds[i] for i in filtered_indices]
+    filtered_config_labels = [config_labels[i] for i in filtered_indices]
+
     # Create scatter plot
-    colors = plt.cm.Set3(np.linspace(0, 1, len(config_labels)))
-    scatter = plt.scatter(runtime_means, fitness_means,
+    colors = plt.cm.Set3(np.linspace(0, 1, len(filtered_config_labels)))
+    scatter = plt.scatter(filtered_runtime_means, filtered_fitness_means,
                          s=200, alpha=0.7, c=colors,
                          edgecolors='black', linewidth=2)
 
     # Add error bars
-    plt.errorbar(runtime_means, fitness_means,
-                xerr=runtime_stds, yerr=fitness_stds,
+    plt.errorbar(filtered_runtime_means, filtered_fitness_means,
+                xerr=filtered_runtime_stds, yerr=filtered_fitness_stds,
                 fmt='none', color='black', alpha=0.5, capsize=3)
 
     # Add labels for each point
-    for i, label in enumerate(config_labels):
-        plt.annotate(label, (runtime_means[i], fitness_means[i]),
+    for i, label in enumerate(filtered_config_labels):
+        plt.annotate(label, (filtered_runtime_means[i], filtered_fitness_means[i]),
                     xytext=(10, 10), textcoords='offset points',
                     fontsize=10, fontweight='bold',
                     bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8),
@@ -249,8 +258,8 @@ if __name__ == "__main__":
     plt.grid(True, alpha=0.3)
 
     # Add quadrant lines to help identify optimal methods
-    median_runtime = np.median(runtime_means)
-    median_fitness = np.median(fitness_means)
+    median_runtime = np.median(filtered_runtime_means)
+    median_fitness = np.median(filtered_fitness_means)
     plt.axvline(x=median_runtime, color='red', linestyle='--', alpha=0.5, label='Median Runtime')
     plt.axhline(y=median_fitness, color='red', linestyle='--', alpha=0.5, label='Median Fitness')
 
