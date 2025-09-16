@@ -40,7 +40,7 @@ class LimitedMultigeneMutationStrategy(MutationStrategy): #Mutacion limitada de 
         random_generator.shuffle(indices)
 
         # Cantidad aleatoria de genes para modificar
-        n = random_generator.randint(1, len(solution.chromosome) * self.max_gene_percent_to_modify)
+        n = random_generator.randint(1, int(len(solution.chromosome) * self.max_gene_percent_to_modify))
 
         # Tomo los primeros n indices
         selected_indices = indices[:n]
