@@ -165,16 +165,16 @@ class EvolutionaryImageApproximator:
 
                 self.calculate_population_fitness(offspring) # Calculo el fitness de los nuevos individuos
                 if young_bias: # Sesgo joven
-                    n_size = self.initial_population_count
-                    if k_size > n_size:
+                    n_size = self.initial_population_count#Tamaño de la población
+                    if k_size > n_size:#Si el tamaño de la población es mayor que el tamaño de la población de la siguiente generación, seleccionamos los individuos para la siguiente generación
                         self.current_population = selection_strategy.select(n_size, offspring, self.fitness_cache, self.generation_number)
-                    else:
+                    else: #la generacion se conformara por los k hijos  + (N-K) individuos seleccionados de la generacion actual
                         self.current_population = selection_strategy.select(n_size - k_size, self.current_population, self.fitness_cache, self.generation_number)
                         selected_offspring = selection_strategy.select(k_size, offspring, self.fitness_cache, self.generation_number)
                         self.current_population.extend(selected_offspring)
                 else: # Tradicional
-                    self.current_population.extend(offspring)
-                    self.current_population = selection_strategy.select(self.initial_population_count, self.current_population, self.fitness_cache, self.generation_number)
+                    self.current_population.extend(offspring) # Añadimos los nuevos individuos a la población
+                    self.current_population = selection_strategy.select(self.initial_population_count, self.current_population, self.fitness_cache, self.generation_number)# Seleccionamos los individuos para la siguiente generación
 
                 self.generation_number += 1
         except KeyboardInterrupt:

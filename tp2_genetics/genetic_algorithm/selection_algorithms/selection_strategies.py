@@ -84,21 +84,21 @@ class UniversalSelection(SelectionStrategy):
 class RankingSelection(SelectionStrategy):
     def select(self, size: int, population: List[IndividualSolution], fitness_cache: dict, generation: int) -> List[IndividualSolution]:
 
-        sorted_population = sorted(population, key=lambda ind: fitness_cache[hash(ind)], reverse=True)
-        ranks = list(range(1, len(sorted_population)+1))
+        sorted_population = sorted(population, key=lambda ind: fitness_cache[hash(ind)], reverse=True)#Ordenamos la población de mayor a menor fitness
+        ranks = list(range(1, len(sorted_population)+1))#Calculamos los rangos de los individuos
 
         pseudo_fit_values = []
-        for rank in ranks:
+        for rank in ranks:#Calculamos los valores pseudo-fitness
             pseudo_fit_values.append(((len(sorted_population) - rank) / len(population), sorted_population[rank - 1]))
 
-        total_pseudo_fit = sum(p[0] for p in pseudo_fit_values)
+        total_pseudo_fit = sum(p[0] for p in pseudo_fit_values)#Calculamos la suma de los valores pseudo-fitness
 
         if total_pseudo_fit == 0:
             return random_generator.choices(population, k=size)
         
         pseudo_fit_values_rel = []
         for pseudo_fit, ind in pseudo_fit_values:
-            pseudo_fit_values_rel.append(((pseudo_fit / total_pseudo_fit), ind))
+            pseudo_fit_values_rel.append(((pseudo_fit / total_pseudo_fit), ind))#Normalizamos los valores pseudo-fitness
         
         selected_individuals = []
         for _ in range(size):
@@ -121,16 +121,16 @@ class BoltzmannSelection(SelectionStrategy):
         num_values = []
         for ind in population:
             fit = fitness_cache[hash(ind)]
-            num_val = math.exp(fit / self.temperature)
+            num_val = math.exp(fit / self.temperature)# Aplicamos la función de Boltzmann
             num_values.append((num_val, ind))
 
         pop_len = len(population)
-        avg_val = sum(num_val / pop_len for num_val, _ in num_values)
+        avg_val = sum(num_val / pop_len for num_val, _ in num_values) # Calculamos el valor promedio de los valores de Boltzmann
 
         if avg_val == 0:
             return random_generator.choices(population, k=size)
 
-        boltzmann_fit_values = [((num_val / avg_val), ind) for num_val, ind in num_values]
+        boltzmann_fit_values = [((num_val / avg_val), ind) for num_val, ind in num_values] # Normalizamos los valores de Boltzmann
 
         total_boltzmann_fits = sum(boltzmann_fit_val for boltzmann_fit_val, _ in boltzmann_fit_values)
 
@@ -196,13 +196,13 @@ class TournamentSelection(SelectionStrategy):
     def select(self, size: int, population: List[IndividualSolution], fitness_cache: dict, generation: int) -> List[IndividualSolution]:
         pass
 
-class TournamentDeterministicSelection(TournamentSelection):
+class TournamentDeterministicSelection(TournamentSelection): #Necesito elegir size individuos  para la siguiente generación, realizo size torneos independientes.
     def select(self, size: int, population: List[IndividualSolution], fitness_cache: dict, generation: int) -> List[IndividualSolution]:
         selected_individuals = []
 
         for _ in range(size):
-            tournament = random_generator.sample(population, self.tournament_size)
-            best_individual = max(tournament, key=lambda ind: fitness_cache[hash(ind)])
+            tournament = random_generator.sample(population, self.tournament_size)# Seleccionamos un torneo de tamaño tournament_size
+            best_individual = max(tournament, key=lambda ind: fitness_cache[hash(ind)])# Seleccionamos el individuo con el mayor fitness
             selected_individuals.append(best_individual)
         
         return selected_individuals
@@ -231,10 +231,10 @@ class TournamentProbabilisticSelection(TournamentSelection):
         selected_individuals = [] 
 
         for _ in range(size):
-            tournament = random_generator.sample(population, self.tournament_size)
+            tournament = random_generator.sample(population, self.tournament_size)# Seleccionamos un torneo de tamaño tournament_size
             r = random_generator.random()
             if r < self.threshold:
-                selected_individual = min(tournament, key=lambda ind: fitness_cache[hash(ind)])
+                selected_individual = min(tournament, key=lambda ind: fitness_cache[hash(ind)])# Seleccionamos el individuo con el menor fitness
             else:
                 selected_individual = max(tournament, key=lambda ind: fitness_cache[hash(ind)])
             

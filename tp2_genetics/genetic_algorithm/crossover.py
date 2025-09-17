@@ -14,13 +14,13 @@ class CrossoverStrategy(ABC):
 class OnePointCrossover(CrossoverStrategy):
     def cross(self, parents: List[IndividualSolution]) -> List[IndividualSolution]:
         childs = []
-        cross_point = random_generator.randint(0, len(parents[0].chromosome) - 1)
+        cross_point = random_generator.randint(0, len(parents[0].chromosome) - 1)   #Punto de cruce aleatorio
 
         p1,p2 = parents[0], parents[1]
 
         if len(p1.chromosome) != len(p2.chromosome):
             raise ValueError("Los individuos deben tener la misma cantidad de genes")
-        
+        #Intercambiamos los genes de los cromosomas de los padres
         child1_genes = p1.chromosome[:cross_point] + p2.chromosome[cross_point:]
         child2_genes = p2.chromosome[:cross_point] + p1.chromosome[cross_point:]
 
