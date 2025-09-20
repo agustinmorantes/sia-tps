@@ -10,6 +10,7 @@ def render_solution_to_image(solution: IndividualSolution, width=500, height=500
 
         vertices = primitive.vertices
         r, g, b = primitive.color
+
         alpha = int(0.8 * 255) # Opacidad fija por ahora
 
         draw.polygon(vertices, fill=(r, g, b, alpha))

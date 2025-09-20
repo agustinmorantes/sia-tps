@@ -63,13 +63,9 @@ class Crossover:
         solution = IndividualSolution()
         index = 0
         while index < len(chromosoma):
-            r = chromosoma[index].value
-            g = chromosoma[index+1].value
-            b = chromosoma[index+2].value
-            vertex1 = chromosoma[index+3].value
-            vertex2 = chromosoma[index+4].value
-            vertex3 = chromosoma[index+5].value
-            primitive = GeometricPrimitive([vertex1, vertex2, vertex3], (r, g, b))
+            color = chromosoma[index].value
+            position = chromosoma[index+1].value
+            primitive = GeometricPrimitive(position, color)
             solution.add_primitive(primitive)
-            index += 6
+            index += 2
         return solution

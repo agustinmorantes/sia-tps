@@ -17,10 +17,10 @@ class ImageSimilarityEvaluator:
         rendered_solution_cv = cv2.cvtColor(rendered_solution_np, cv2.COLOR_RGB2BGR)
         rendered_solution_cv = cv2.resize(rendered_solution_cv, (self.target_image_data.shape[1], target_image_cv.shape[0]))
         
-        pixel_difference_matrix = cv2.absdiff(target_image_cv, rendered_solution_cv)
-        mean_pixel_difference = np.mean(pixel_difference_matrix)
+        pixel_difference_matrix = cv2.absdiff(target_image_cv, rendered_solution_cv) # Diferencia absoluta por píxel
+        mean_pixel_difference = np.mean(pixel_difference_matrix) # Promedio de la diferencia de píxeles
 
-        linear_similarity_score = 1 - (mean_pixel_difference / 255)
+        linear_similarity_score = 1 - (mean_pixel_difference / 255) # Normalizar a [0, 1]
         final_fitness_value = linear_similarity_score ** 2 # Aplicar penalización no lineal
 
         return final_fitness_value
