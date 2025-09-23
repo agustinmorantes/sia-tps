@@ -1,10 +1,13 @@
 import copy
+import math
 import os
 import time
 import shutil
+from collections import defaultdict
 from typing import List, Tuple
 
 from genetic_algorithm.crossover import OnePointCrossover, TwoPointsCrossover, CrossoverStrategy
+from genetic_algorithm.models.genetic_attribute import RGBComponentAttribute, VertexCoordinateAttribute
 from genetic_algorithm.models.individual_solution import IndividualSolution
 from genetic_algorithm.mutation import get_mutation_strategy
 from genetic_algorithm.selection_algorithms.selection_strategies import get_selection_strategy
@@ -56,6 +59,41 @@ class EvolutionaryImageApproximator:
 
         return fitness_values, best_fitness_value, best_solution
 
+    @staticmethod
+    def calculate_population_diversity(population: List[IndividualSolution]) -> float:
+        if len(population) <= 1:
+            return 0.0
+
+        # Queremos contar la frecuencia de cada valor de gen en cada posición del cromosoma.
+        gene_frequencies = defaultdict(lambda: defaultdict(int))
+
+        for individual in population:
+            for gene_idx, gene in enumerate(individual.chromosome):
+                if isinstance(gene, RGBComponentAttribute):
+                    # 16 bines para cada componente de color (0-255)
+                    color_bin = gene.value // 16
+                    gene_frequencies[gene_idx][f"color_{color_bin}"] += 1
+                elif isinstance(gene, VertexCoordinateAttribute):
+                    # Imagen 500x500 + extensión de 20%. ~7 bines por coordenada. Rango (-100, 600) approx.
+                    x_bin = int(gene.value[0]) // 100
+                    y_bin = int(gene.value[1]) // 100
+                    gene_frequencies[gene_idx][f"coord_{x_bin}_{y_bin}"] += 1
+
+        # Calculamos la entropía para cada gen y luego promediamos.
+        total_entropy = 0.0
+        for gene_idx, value_counts in gene_frequencies.items():
+            gene_entropy = 0.0
+            total_count = sum(value_counts.values())
+
+            for count in value_counts.values():
+                if count > 0:
+                    probability = count / total_count
+                    gene_entropy -= probability * math.log2(probability)
+
+            total_entropy += gene_entropy
+
+        return total_entropy / len(gene_frequencies) if gene_frequencies else 0.0
+
     def save_solution_image(self, solution: IndividualSolution, generation: int):
         final_image = render_solution_to_image(solution)
         final_image.save(
@@ -104,11 +142,14 @@ class EvolutionaryImageApproximator:
             while self.generation_number <= self.gen_cutoff:
                 fitness_values, generation_max_fitness, best_current_solution = self.calculate_population_fitness(self.current_population)
 
+                diversity = self.calculate_population_diversity()
+
                 gen_metrics.append({
                     "generation": self.generation_number,
                     "max_fitness": generation_max_fitness,
                     "average_fitness": sum(fitness_values) / len(fitness_values),
                     "min_fitness": min(fitness_values),
+                    "diversity": diversity,
                     "population_size": len(self.current_population),
                     "time_elapsed": time.time() - start_time,
                 })
@@ -139,7 +180,7 @@ class EvolutionaryImageApproximator:
                     cutoff_reason = "time_cutoff"
                     break
 
-                print(f"Generation: {self.generation_number}, Max fitness: {self.max_fitness}, Time: {mins:02d}:{secs:02d}")
+                print(f"Generation: {self.generation_number}, Max fitness: {self.max_fitness}, Diversity: {diversity}, Time: {mins:02d}:{secs:02d}")
 
                 selected_parents = selection_strategy.select(k_size, self.current_population, self.fitness_cache, self.generation_number)
 
