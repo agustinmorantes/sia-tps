@@ -142,7 +142,7 @@ class EvolutionaryImageApproximator:
             while self.generation_number <= self.gen_cutoff:
                 fitness_values, generation_max_fitness, best_current_solution = self.calculate_population_fitness(self.current_population)
 
-                diversity = self.calculate_population_diversity()
+                diversity = self.calculate_population_diversity(self.current_population)
 
                 gen_metrics.append({
                     "generation": self.generation_number,
