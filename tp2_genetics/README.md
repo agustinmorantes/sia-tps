@@ -15,7 +15,7 @@ pip install --user pipenv
   ```shell
   pipenv install
   ```
-### 3. Activar el virtual environment
+pip### 3. Activar el virtual environment
   ```
   pipenv shell
   ```
