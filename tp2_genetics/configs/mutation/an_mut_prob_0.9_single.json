@@ -1,0 +1,19 @@
+{
+  "target_image_path": "./images/piramides.jpg",
+  "initial_population_size": 200,
+  "triangles_per_solution": 50,
+  "recombination_probability": 0.9,
+  "mutation_probability": 0.9,
+  "mutation_delta_max_percent": 0.6,
+  "parents_selection_percentage": 0.3,
+  "gen_cutoff": 1500,
+  "fitness_cutoff": 0.99,
+  "minutes_cutoff": 30,
+  "no_change_gens_cutoff": 400,
+  "young_bias": true,
+  "progress_saving": true,
+  "selection_algorithm": "boltzmann_annealing",
+  "crossover_algorithm": "two_points",
+  "mutation_algorithm": "single",
+  "max_gene_percent_to_modify": 0.01
+}
