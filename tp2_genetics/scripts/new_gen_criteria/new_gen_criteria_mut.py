@@ -13,33 +13,32 @@ CONFIG_FILE = "./configs/new_gen_criteria/new_gen_criteria_mut_12.json"
 OUTPUT_METRICS_FILE = "./metrics/new_gen_criteria_mut_12_1_percent.csv"
 OUTPUT_DIR = "./outputs/new_gen_criteria_mut_12_1_percent"
 
-# --- Crear carpetas ---
+
 Path("./metrics").mkdir(exist_ok=True)
 Path(OUTPUT_DIR).mkdir(exist_ok=True)
 comparison_dir = Path(OUTPUT_DIR) / "comparisons"
 comparison_dir.mkdir(exist_ok=True)
 
-# --- Leer configuraciones ---
+
 with open(CONFIG_FILE, "r") as f:
     configs = json.load(f)
 
 all_results = []
 
-# --- Ejecutar experimentos ---
+
 for cfg in configs:
     print(f"\n=== Running: {cfg['selection_algorithm']}, young_bias={cfg['young_bias']} ===")
 
-    # Leer imagen de referencia
+
     target_image = cv2.imread(cfg["target_image_path"])
     if target_image is None:
         raise FileNotFoundError(f"No se pudo leer la imagen: {cfg['target_image_path']}")
 
     fitness_calculator = ImageSimilarityEvaluator(target_image).evaluate_average_pixel_difference
 
-    # Crear población inicial
     initial_population = create_initial_population(cfg["initial_population_size"], cfg["triangles_per_solution"])
 
-    # Crear aproximador
+
     approximator = EvolutionaryImageApproximator(
         similarity_evaluator=fitness_calculator,
         reference_image=target_image,
@@ -50,7 +49,6 @@ for cfg in configs:
         output_dir=f"{OUTPUT_DIR}/{cfg.get('name', cfg['selection_algorithm'])}"
     )
 
-    # Ejecutar evolución
     best_solution, max_fitness, generations, cutoff_reason, gen_metrics = approximator.run(
         initial_solution_set=initial_population,
         primitives_per_solution=cfg["triangles_per_solution"],
@@ -68,7 +66,7 @@ for cfg in configs:
         **{k: v for k, v in cfg.items() if k.startswith("boltzmann")}
     )
 
-    # --- Guardar métricas con info de la configuración ---
+
     df = pd.DataFrame(gen_metrics)
     df["selection_algorithm"] = cfg["selection_algorithm"]
     df["young_bias"] = cfg["young_bias"]
@@ -82,12 +80,10 @@ for cfg in configs:
 
     all_results.append(df)
 
-    # --- Graficar individual por caso ---
     case_name = df["config_name"].iloc[0]
     case_dir = Path(OUTPUT_DIR) / case_name
     case_dir.mkdir(exist_ok=True, parents=True)
 
-    # 1. Fitness vs Generación
     plt.figure(figsize=(10, 5))
     plt.plot(df["generation"], df["max_fitness"], label="Max fitness")
     plt.xlabel("Generación")
@@ -98,7 +94,6 @@ for cfg in configs:
     plt.savefig(case_dir / "fitness_vs_gen.png")
     plt.close()
 
-    # 2. Diversidad vs Generación
     if "diversity" in df.columns:
         plt.figure(figsize=(10, 5))
         plt.plot(df["generation"], df["diversity"], label="Diversidad")
@@ -110,7 +105,6 @@ for cfg in configs:
         plt.savefig(case_dir / "diversity_vs_gen.png")
         plt.close()
 
-        # 3. Diversidad vs Fitness
         plt.figure(figsize=(10, 5))
         plt.scatter(df["max_fitness"], df["diversity"], s=10, alpha=0.7)
         plt.xlabel("Fitness")
@@ -120,16 +114,13 @@ for cfg in configs:
         plt.savefig(case_dir / "diversity_vs_fitness.png")
         plt.close()
 
-# --- Concatenar resultados ---
 results_df = pd.concat(all_results, ignore_index=True)
 results_df.to_csv(OUTPUT_METRICS_FILE, index=False)
 print(f"\n✅ All metrics saved to {OUTPUT_METRICS_FILE}")
 
-# --- Graficos comparativos Young Bias vs Traditional ---
 for sel_algo in results_df["selection_algorithm"].unique():
     sel_df = results_df[results_df["selection_algorithm"] == sel_algo]
 
-    # Comparar Young vs Traditional para cada grupo de parámetros
     group_cols = ["initial_population_size", "triangles_per_solution",
                   "parents_selection_percentage", "mutation_probability",
                   "mutation_delta_max_percent"]

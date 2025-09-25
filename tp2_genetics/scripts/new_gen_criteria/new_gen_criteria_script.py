@@ -9,32 +9,26 @@ import os
 from genetic_algorithm.algorithm_definition import EvolutionaryImageApproximator
 from genetic_algorithm.utils.create_individuals import create_initial_population
 
-# --- Configuración ---
+
 CONFIG_FILE = "./configs/new_generation_criteria.json"
 OUTPUT_METRICS_FILE = "./metrics/all_experiments_metrics.csv"
 
-# --- Leer configuraciones ---
 with open(CONFIG_FILE, "r") as f:
     configs = json.load(f)
 
-# --- Crear carpeta de métricas ---
 Path("./metrics").mkdir(exist_ok=True)
 
-# --- Ejecutar experimentos ---
 all_results = []
 
 for cfg in configs:
     print(f"\n=== Running: {cfg['selection_algorithm']}, young_bias={cfg['young_bias']} ===")
 
-    # Leer imagen de referencia
     target_image = cv2.imread(cfg["target_image_path"])
     from genetic_algorithm.fitness import ImageSimilarityEvaluator
     fitness_calculator = ImageSimilarityEvaluator(target_image).evaluate_average_pixel_difference
 
-    # Crear población inicial
     initial_population = create_initial_population(cfg["initial_population_size"], cfg["triangles_per_solution"])
 
-    # Crear aproximador
     approximator = EvolutionaryImageApproximator(
         similarity_evaluator=fitness_calculator,
         reference_image=target_image,
@@ -45,7 +39,6 @@ for cfg in configs:
         output_dir=f"outputs/{cfg.get('name', cfg['selection_algorithm'])}"
     )
 
-    # Ejecutar evolución
     best_solution, max_fitness, generations, cutoff_reason, gen_metrics = approximator.run(
         initial_solution_set=initial_population,
         primitives_per_solution=cfg["triangles_per_solution"],
@@ -63,19 +56,17 @@ for cfg in configs:
         **{k: v for k, v in cfg.items() if k.startswith("boltzmann")}
     )
 
-    # Guardar métricas con info de la configuración
+
     df = pd.DataFrame(gen_metrics)
     df["selection_algorithm"] = cfg["selection_algorithm"]
     df["young_bias"] = cfg["young_bias"]
     df["config_name"] = cfg.get("name", f"{cfg['selection_algorithm']}_yb{cfg['young_bias']}")
     all_results.append(df)
 
-# --- Concatenar resultados ---
 results_df = pd.concat(all_results, ignore_index=True)
 results_df.to_csv(OUTPUT_METRICS_FILE, index=False)
 print(f"\n✅ All metrics saved to {OUTPUT_METRICS_FILE}")
 
-# --- Graficar fitness máximo ---
 plt.figure(figsize=(12, 6))
 for (sel, bias), group in results_df.groupby(["selection_algorithm", "young_bias"]):
     plt.plot(group["generation"], group["max_fitness"], label=f"{sel}, young_bias={bias}")
