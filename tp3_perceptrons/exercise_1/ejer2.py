@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Tuple
 
-from perceptron import SimplePerceptron
+from perceptron import SimplePerceptron, LinearPerceptron, NonLinearPerceptron
 
 
 @dataclass
@@ -24,17 +24,17 @@ def load_csv_as_classification(csv_path: Path, threshold: float | None = None) -
     with csv_path.open("r", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            x1 = float(row["x1"])  # type: ignore[index]
-            x2 = float(row["x2"])  # type: ignore[index]
-            x3 = float(row["x3"])  # type: ignore[index]
-            y_val = float(row["y"])  # type: ignore[index]
+            x1 = float(row["x1"])  
+            x2 = float(row["x2"])  
+            x3 = float(row["x3"])  
+            y_val = float(row["y"])  
             X.append([x1, x2, x3])
             y_continuous.append(y_val)
 
-    # Determine threshold if not provided (use median as suggested)
+   
     chosen_threshold = threshold if threshold is not None else median(y_continuous)
 
-    # Binarize: map to {-1, 1} to match perceptron
+  
     y: List[int] = [1 if v >= chosen_threshold else -1 for v in y_continuous]
 
     return Dataset(X=X, y=y), chosen_threshold
@@ -90,22 +90,55 @@ def k_fold_indices(n_samples: int, k: int, seed: int | None = 42) -> List[Tuple[
     return result
 
 
-def evaluate_perceptron(X_train: List[List[float]], y_train: List[int], X_test: List[List[float]], y_test: List[int], learning_rate: float, max_epochs: int) -> Tuple[float, float]:
-    model = SimplePerceptron(learning_rate=learning_rate, max_epochs=max_epochs)
+def evaluate_perceptron(X_train: List[List[float]], y_train: List[int], X_test: List[List[float]], y_test: List[int], learning_rate: float, max_epochs: int, perceptron_type: str) -> Tuple[float, float]:
+    if perceptron_type == "linear":
+        model = LinearPerceptron(learning_rate=learning_rate, max_epochs=max_epochs)
+    elif perceptron_type == "nonlinear":
+        model = NonLinearPerceptron(learning_rate=learning_rate, max_epochs=max_epochs)
+    else:
+        raise ValueError("Tipo de perceptrón no válido. Use 'linear' o 'nonlinear'.")
+    
     model.train(X_train, y_train)
     train_acc, _ = model.evaluate(X_train, y_train) #porcentaje de aciertos en entrenamiento
     test_acc, _ = model.evaluate(X_test, y_test) #porcentaje de aciertos en test
     return train_acc, test_acc
 
 
-def run_holdout(dataset: Dataset, learning_rate: float, max_epochs: int, test_size: float, seed: int) -> None:
+def standardize_features(X_train: List[List[float]], X_test: List[List[float]]) -> Tuple[List[List[float]], List[List[float]]]:
+    # Calcular media y desviación estándar de los datos de entrenamiento
+    n_features = len(X_train[0])
+    means = [sum(X_train[i][j] for i in range(len(X_train))) / len(X_train) for j in range(n_features)]
+    stds = [
+        (sum((X_train[i][j] - means[j]) ** 2 for i in range(len(X_train))) / len(X_train)) ** 0.5
+        for j in range(n_features)
+    ]
+    
+    # Estandarizar X_train
+    X_train_scaled = []
+    for sample in X_train:
+        scaled_sample = [(sample[j] - means[j]) / (stds[j] if stds[j] != 0 else 1) for j in range(n_features)]
+        X_train_scaled.append(scaled_sample)
+        
+    # Estandarizar X_test usando las medias y stds de entrenamiento
+    X_test_scaled = []
+    for sample in X_test:
+        scaled_sample = [(sample[j] - means[j]) / (stds[j] if stds[j] != 0 else 1) for j in range(n_features)]
+        X_test_scaled.append(scaled_sample)
+        
+    return X_train_scaled, X_test_scaled
+
+
+def run_holdout(dataset: Dataset, learning_rate: float, max_epochs: int, test_size: float, seed: int, perceptron_type: str) -> None:
     X_train, X_test, y_train, y_test = train_test_split(dataset.X, dataset.y, test_size=test_size, seed=seed)
-    train_acc, test_acc = evaluate_perceptron(X_train, y_train, X_test, y_test, learning_rate, max_epochs)
+    
+    X_train_scaled, X_test_scaled = standardize_features(X_train, X_test)
+    
+    train_acc, test_acc = evaluate_perceptron(X_train_scaled, y_train, X_test_scaled, y_test, learning_rate, max_epochs, perceptron_type)
     print(f"Hold-out -> train_acc={train_acc:.3f} test_acc={test_acc:.3f}")
 
 
-def run_kfold(dataset: Dataset, learning_rate: float, max_epochs: int, k: int, seed: int) -> None:
-    splits = k_fold_indices(len(dataset.X), k=k, seed=seed)# devuelve donde una lista donde cada tupla indica qué índices usar como entrenamiento y validación.
+def run_kfold(dataset: Dataset, learning_rate: float, max_epochs: int, k: int, seed: int, perceptron_type: str) -> None:
+    splits = k_fold_indices(len(dataset.X), k=k, seed=seed)# devuelve una lista con k pares (train_idx, val_idx), y cada uno te dice qué datos usar para entrenar y cuáles para validar
     test_accs: List[float] = []
     train_accs: List[float] = []
     for fold_num, (train_idx, val_idx) in enumerate(splits, start=1): #Usa los índices de train_idx y val_idx para construir listas concretas de datos y etiquetas
@@ -114,7 +147,10 @@ def run_kfold(dataset: Dataset, learning_rate: float, max_epochs: int, k: int, s
         X_val = [dataset.X[i] for i in val_idx]
         y_val = [dataset.y[i] for i in val_idx]
 
-        train_acc, val_acc = evaluate_perceptron(X_train, y_train, X_val, y_val, learning_rate, max_epochs)
+        # Estandarizar los datos para este fold
+        X_train_scaled, X_val_scaled = standardize_features(X_train, X_val)
+
+        train_acc, val_acc = evaluate_perceptron(X_train_scaled, y_train, X_val_scaled, y_val, learning_rate, max_epochs, perceptron_type)
         train_accs.append(train_acc)
         test_accs.append(val_acc)
         print(f"Fold {fold_num}/{k}: train_acc={train_acc:.3f} val_acc={val_acc:.3f}")
@@ -127,14 +163,15 @@ def run_kfold(dataset: Dataset, learning_rate: float, max_epochs: int, k: int, s
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Ejercicio 2 - Simple Perceptron (lineal)")
+    parser = argparse.ArgumentParser(description="Ejercicio 2 - Simple Perceptron (lineal y no lineal)") 
     parser.add_argument("--csv", type=str, default=str(Path(__file__).resolve().parents[1] / "TP3-ej2-conjunto.csv"), help="Ruta al CSV con columnas x1,x2,x3,y")
     parser.add_argument("--threshold", type=float, default=None, help="Umbral para binarizar y (por defecto: mediana)")
-    parser.add_argument("--lr", type=float, default=0.1, help="Learning rate del perceptrón")
+    parser.add_argument("--lr", type=float, default=0.001, help="Learning rate del perceptrón") 
     parser.add_argument("--epochs", type=int, default=1000, help="Máximo de épocas de entrenamiento")
     parser.add_argument("--test_size", type=float, default=0.2, help="Proporción del conjunto de test para hold-out")
     parser.add_argument("--seed", type=int, default=42, help="Semilla para aleatoriedad")
     parser.add_argument("--kfold", type=int, default=5, help="Si >0, usa validación cruzada K-fold con K indicado")
+    parser.add_argument("--perceptron_type", type=str, default="linear", choices=["linear", "nonlinear"], help="Tipo de perceptrón a usar: 'linear' o 'nonlinear'") 
 
     args = parser.parse_args()
 
@@ -143,9 +180,9 @@ def main() -> None:
     print(f"Cargado {len(dataset.X)} muestras desde {csv_path.name}. Umbral usado para y: {used_threshold:.3f}")
 
     if args.kfold and args.kfold > 1:
-        run_kfold(dataset, learning_rate=args.lr, max_epochs=args.epochs, k=args.kfold, seed=args.seed)
+        run_kfold(dataset, learning_rate=args.lr, max_epochs=args.epochs, k=args.kfold, seed=args.seed, perceptron_type=args.perceptron_type)
     else:
-        run_holdout(dataset, learning_rate=args.lr, max_epochs=args.epochs, test_size=args.test_size, seed=args.seed)
+        run_holdout(dataset, learning_rate=args.lr, max_epochs=args.epochs, test_size=args.test_size, seed=args.seed, perceptron_type=args.perceptron_type)
 
 
 if __name__ == "__main__":
