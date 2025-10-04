@@ -25,7 +25,7 @@ class MultiLayerPerceptron:
         self.weights = [np.random.uniform(-0.5, 0.5, (layer_sizes[i], layer_sizes[i+1])) for i in range(self.n_layers)]
         self.biases = [np.random.uniform(-0.5, 0.5, (1, layer_sizes[i+1])) for i in range(self.n_layers)]
 
-        # Adam
+        # Adam (lo saco me parece)
         self.m_w = [np.zeros_like(w) for w in self.weights]
         self.v_w = [np.zeros_like(w) for w in self.weights]
         self.m_b = [np.zeros_like(b) for b in self.biases]
@@ -41,10 +41,15 @@ class MultiLayerPerceptron:
         return activations
 
     def backward(self, activations, Y):
-        deltas = [Y - activations[-1]] 
+        deltas = []
+
+        delta_L = (activations[-1] - Y) * self.activation.derivative(activations[-1])
+        deltas.insert(0, delta_L)
+        
         for i in reversed(range(self.n_layers - 1)):
             delta = np.dot(deltas[0], self.weights[i+1].T) * self.activation.derivative(activations[i+1])
             deltas.insert(0, delta)
+
         return deltas
 
     def update_weights(self, activations, deltas):
@@ -54,8 +59,9 @@ class MultiLayerPerceptron:
             grad_b = np.sum(deltas[i], axis=0, keepdims=True)
 
             if self.optimizer == 'sgd':
-                self.weights[i] += self.eta * grad_w
-                self.biases[i] += self.eta * grad_b
+                # Regla teórica: W = W - η * ∂E/∂W
+                self.weights[i] -= self.eta * grad_w
+                self.biases[i]  -= self.eta * grad_b
 
             elif self.optimizer == 'adam':
                 beta1, beta2, eps = 0.9, 0.999, 1e-8
@@ -63,13 +69,13 @@ class MultiLayerPerceptron:
                 self.v_w[i] = beta2 * self.v_w[i] + (1 - beta2) * (grad_w**2)
                 m_hat_w = self.m_w[i] / (1 - beta1**self.t)
                 v_hat_w = self.v_w[i] / (1 - beta2**self.t)
-                self.weights[i] += self.eta * m_hat_w / (np.sqrt(v_hat_w) + eps)
+                self.weights[i] -= self.eta * m_hat_w / (np.sqrt(v_hat_w) + eps)
 
                 self.m_b[i] = beta1 * self.m_b[i] + (1 - beta1) * grad_b
                 self.v_b[i] = beta2 * self.v_b[i] + (1 - beta2) * (grad_b**2)
                 m_hat_b = self.m_b[i] / (1 - beta1**self.t)
                 v_hat_b = self.v_b[i] / (1 - beta2**self.t)
-                self.biases[i] += self.eta * m_hat_b / (np.sqrt(v_hat_b) + eps)
+                self.biases[i] -= self.eta * m_hat_b / (np.sqrt(v_hat_b) + eps)
 
     def train(self, X, Y, epochs=10000, epsilon=1e-5):
         for epoch in range(epochs):
@@ -77,9 +83,11 @@ class MultiLayerPerceptron:
             deltas = self.backward(activations, Y)
             self.update_weights(activations, deltas)
 
-            mse = np.mean((Y - activations[-1])**2)
+            mse = 0.5 * np.mean((Y - activations[-1])**2)
+
             if epoch % 500 == 0:
                 print(f"Época {epoch}, MSE = {mse:.6f}")
+                
             if mse < epsilon:
                 print(f"Convergencia alcanzada en época {epoch}, MSE={mse:.6f}")
                 break
