@@ -1,7 +1,7 @@
 import numpy as np
 from src.multi_layer_perceptron import MultiLayerPerceptron, tanh
 
-data = np.loadtxt("TP3-ej3-digitos.txt", dtype=int)
+data = np.loadtxt("./resources/TP3-ej3-digitos.txt", dtype=int)
 
 X = data.reshape(-1, 35)
 
