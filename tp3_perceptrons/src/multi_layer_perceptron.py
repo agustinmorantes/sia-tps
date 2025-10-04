@@ -16,16 +16,22 @@ tanh = ActivationFunction(
 )
 
 class MultiLayerPerceptron:
-    def __init__(self, layer_sizes, activation=tanh, eta=0.05, optimizer='sgd'):
+    def __init__(self, layer_sizes, activation=tanh, eta=0.05, alpha=0.9, optimizer='sgd'):
         self.activation = activation
         self.eta = eta
+        self.alpha = alpha  # solo se usa para momentum
         self.optimizer = optimizer
         self.n_layers = len(layer_sizes) - 1
 
+        # Inicialización de pesos y bias
         self.weights = [np.random.uniform(-0.5, 0.5, (layer_sizes[i], layer_sizes[i+1])) for i in range(self.n_layers)]
         self.biases = [np.random.uniform(-0.5, 0.5, (1, layer_sizes[i+1])) for i in range(self.n_layers)]
 
-        # Adam (lo saco me parece)
+        # Variables auxiliares
+        self.deltaW_prev = [np.zeros_like(w) for w in self.weights]
+        self.deltaB_prev = [np.zeros_like(b) for b in self.biases]
+
+        # Adam
         self.m_w = [np.zeros_like(w) for w in self.weights]
         self.v_w = [np.zeros_like(w) for w in self.weights]
         self.m_b = [np.zeros_like(b) for b in self.biases]
@@ -59,11 +65,23 @@ class MultiLayerPerceptron:
             grad_b = np.sum(deltas[i], axis=0, keepdims=True)
 
             if self.optimizer == 'sgd':
-                # Regla teórica: W = W - η * ∂E/∂W
+                # Descenso de gradiente clásico
                 self.weights[i] -= self.eta * grad_w
                 self.biases[i]  -= self.eta * grad_b
 
+            elif self.optimizer == 'momentum':
+                # Actualización con Momentum
+                deltaW = self.eta * grad_w + self.alpha * self.deltaW_prev[i]
+                deltaB = self.eta * grad_b + self.alpha * self.deltaB_prev[i]
+
+                self.weights[i] -= deltaW
+                self.biases[i]  -= deltaB
+
+                self.deltaW_prev[i] = deltaW
+                self.deltaB_prev[i] = deltaB
+
             elif self.optimizer == 'adam':
+                # Actualización con Adam
                 beta1, beta2, eps = 0.9, 0.999, 1e-8
                 self.m_w[i] = beta1 * self.m_w[i] + (1 - beta1) * grad_w
                 self.v_w[i] = beta2 * self.v_w[i] + (1 - beta2) * (grad_w**2)
@@ -94,4 +112,3 @@ class MultiLayerPerceptron:
 
     def predict(self, X):
         return self.forward(X)[-1]
-
