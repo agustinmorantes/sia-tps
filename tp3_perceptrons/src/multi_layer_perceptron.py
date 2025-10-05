@@ -16,11 +16,15 @@ tanh = ActivationFunction(
 )
 
 class MultiLayerPerceptron:
-    def __init__(self, layer_sizes, activation=tanh, eta=0.05, alpha=0.9, optimizer='sgd'):
+    def __init__(self, layer_sizes, activation=tanh, eta=0.05, alpha=0.9, optimizer='sgd', batch_size=None, seed=123):
+        if seed is not None:
+            np.random.seed(seed)
+
         self.activation = activation
         self.eta = eta
         self.alpha = alpha  # solo se usa para momentum
         self.optimizer = optimizer
+        self.batch_size = batch_size  # None = batch, 1 = online, >1 = minibatch
         self.n_layers = len(layer_sizes) - 1
 
         # Inicialización de pesos y bias
@@ -96,18 +100,52 @@ class MultiLayerPerceptron:
                 self.biases[i] -= self.eta * m_hat_b / (np.sqrt(v_hat_b) + eps)
 
     def train(self, X, Y, epochs=10000, epsilon=1e-5):
-        for epoch in range(epochs):
-            activations = self.forward(X)
-            deltas = self.backward(activations, Y)
-            self.update_weights(activations, deltas)
+        n_samples = X.shape[0]
 
-            mse = 0.5 * np.mean((Y - activations[-1])**2)
+        if self.batch_size is None:
+            # Batch mode
+            effective_batch_size = n_samples
+        else:
+            # Online (batch_size=1) o Minibatch (batch_size>1)
+            effective_batch_size = self.batch_size
+
+        for epoch in range(epochs):
+            # Shuffle del dataset al inicio de cada época
+            indices = np.random.permutation(n_samples)
+            X_shuffled = X[indices]
+            Y_shuffled = Y[indices]
+
+            epoch_mse = 0
+            n_batches = 0
+
+            # Procesar por batches
+            for start_idx in range(0, n_samples, effective_batch_size):
+                end_idx = min(start_idx + effective_batch_size, n_samples)
+                X_batch = X_shuffled[start_idx:end_idx]
+                Y_batch = Y_shuffled[start_idx:end_idx]
+
+                # Forward pass
+                activations = self.forward(X_batch)
+
+                # Backward pass
+                deltas = self.backward(activations, Y_batch)
+
+                # Update weights
+                self.update_weights(activations, deltas)
+
+                # Calcular MSE del batch
+                batch_mse = 0.5 * np.mean((Y_batch - activations[-1])**2)
+                epoch_mse += batch_mse
+                n_batches += 1
+
+            # MSE promedio de la época
+            epoch_mse /= n_batches
 
             if epoch % 500 == 0:
-                print(f"Época {epoch}, MSE = {mse:.6f}")
-                
-            if mse < epsilon:
-                print(f"Convergencia alcanzada en época {epoch}, MSE={mse:.6f}")
+                print(f"Época {epoch}, MSE = {epoch_mse:.6f}")
+
+            if epoch_mse < epsilon:
+                print(f"Convergencia alcanzada en época {epoch}, MSE={epoch_mse:.6f}")
                 break
 
     def predict(self, X):

@@ -1,6 +1,8 @@
 import numpy as np
 from src.multi_layer_perceptron import MultiLayerPerceptron, sigmoid, tanh
 
+np.set_printoptions(suppress=True, precision=6, floatmode='fixed')
+
 data = np.loadtxt("./resources/TP3-ej3-digitos.txt", dtype=int)
 X = data.reshape(-1, 35)
 X = X.astype(float)
@@ -18,7 +20,8 @@ mlp = MultiLayerPerceptron(
     activation=sigmoid,
     eta=0.02,
     alpha=0.9,
-    optimizer='momentum'  # también 'sgd' o 'adam'
+    optimizer='adam',
+    batch_size=1 # online
 )
 
 print("Entrenando red para reconocimiento de dígitos...")
