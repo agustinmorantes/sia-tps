@@ -54,7 +54,7 @@ class SimplePerceptron:
             
             # Guardar historial de entrenamiento
             self.training_history.append({
-                'epoch': epoch + 1,
+                'epoch': epoch,
                 'errors': errors,
                 'weights': self.weights.copy(),
                 'bias': self.bias
@@ -62,7 +62,7 @@ class SimplePerceptron:
             
             # Si no hay errores, el perceptrón convergió
             if errors == 0:
-                print(f"Convergencia alcanzada en {epoch + 1} épocas")
+                print(f"Convergencia alcanzada en {epoch} épocas")
                 print(f"Pesos finales: {[f'{w:.3f}' for w in self.weights]}")
                 print(f"Bias final: {self.bias:.3f}")
                 return True

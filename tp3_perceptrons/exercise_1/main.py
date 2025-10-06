@@ -1,11 +1,12 @@
 from typing import List
 from perceptron import SimplePerceptron
+from plotting import plot_training_history, plot_decision_lines_evolution
 
 def test_logical_function(name: str, X: List[List[float]], y: List[int]):
 
     print(f"\nPrueba con: {name}\n")
     
-    perceptron = SimplePerceptron(learning_rate=0.1, max_epochs=1000)
+    perceptron = SimplePerceptron(learning_rate=0.01, max_epochs=200)
     
     print("Datos de entrenamiento:")
     for i, (inputs, target) in enumerate(zip(X, y)):
@@ -23,13 +24,14 @@ def test_logical_function(name: str, X: List[List[float]], y: List[int]):
         print(f"  Predicciones: {predictions}")
         print(f"  Objetivos:   {y}")
         
-        # Mostrar predicciones detalladas
-        print(f"\nPredicciones detalladas:")
-        for i, (inputs, target, prediction) in enumerate(zip(X, y, predictions)):
-            status = "OK" if prediction == target else "WRONG"
-            print(f"  {inputs} -> {prediction} (esperado: {target}) {status}")
+       
+        # Crear gráficos
+        plot_decision_lines_evolution(perceptron, X, y, name)
+        plot_training_history(perceptron, name)
+        
     else:
         print(f"\nEl perceptrón simple no pudo aprender la función {name}")
+        plot_training_history(perceptron, name)
 
 def main():
     
