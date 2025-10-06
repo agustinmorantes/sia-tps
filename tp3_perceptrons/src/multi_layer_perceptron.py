@@ -16,11 +16,17 @@ tanh = ActivationFunction(
 )
 
 class MultiLayerPerceptron:
-    def __init__(self, layer_sizes, activation=tanh, eta=0.05, alpha=0.9, optimizer='sgd', batch_size=None, seed=123):
+    def __init__(self, layer_sizes, activation="tanh", eta=0.05, alpha=0.9, optimizer='sgd', batch_size=None, seed=123):
         if seed is not None:
             np.random.seed(seed)
 
-        self.activation = activation
+        if activation == "tanh":
+            self.activation = tanh
+        elif activation == "sigmoid":
+            self.activation = sigmoid
+        else:
+            raise ValueError("Unsupported activation function. Use 'tanh' or 'sigmoid'.")
+
         self.eta = eta
         self.alpha = alpha  # solo se usa para momentum
         self.optimizer = optimizer

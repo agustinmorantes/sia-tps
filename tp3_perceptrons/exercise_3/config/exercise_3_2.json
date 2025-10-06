@@ -1,0 +1,8 @@
+{
+  "module": "exercise_3.exercise_3_2",
+  "config": {
+    "layer_sizes": [35,15,1],
+    "activation": "tanh",
+    "eta": 0.05
+  }
+}

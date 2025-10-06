@@ -1,0 +1,11 @@
+{
+  "module": "exercise_3.exercise_3_3",
+  "config": {
+    "layer_sizes": [35,50,10],
+    "activation": "sigmoid",
+    "eta": 0.02,
+    "alpha": 0.9,
+    "optimizer": "adam",
+    "batch_size": 1
+  }
+}

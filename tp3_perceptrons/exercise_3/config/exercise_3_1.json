@@ -1,0 +1,9 @@
+{
+  "module": "exercise_3.exercise_3_1",
+  "config": {
+    "layer_sizes": [2,2,1],
+    "activation": "tanh",
+    "eta": 0.05,
+    "optimizer": "adam"
+  }
+}
