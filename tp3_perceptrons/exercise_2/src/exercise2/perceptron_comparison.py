@@ -78,7 +78,7 @@ class PerceptronComparison:
         print("=" * 60)
         
         # Entrenar Perceptrón Lineal (más rápido con k=3)
-        linear_train_mse, linear_test_mse = self.train_perceptron_type("LINEAR", k_folds=3)
+        linear_train_mse, linear_test_mse = self.train_perceptron_type("LINEAR", k_folds=7)
         
         # Entrenar Perceptrón No Lineal (más confiable con k=7)
         non_linear_type = self.config["perceptron"]["architecture"][0]["activationFunction"]["type"]

@@ -20,7 +20,11 @@ class Exercise2DataHandler:
         """Cargar dataset desde archivo CSV"""
         dataset = pd.read_csv(self.dataset_path)
         self.target_values = dataset["y"].to_numpy()
-        self.input_features = dataset.drop(columns=["y"]).to_numpy()
+        features = dataset.drop(columns=["y"]).to_numpy()
+        # Agregar término de sesgo como primera característica, como en `trabajo/`
+        bias = PerceptronTrainingConfig.get_instance().bias_value
+        bias_column = np.full((features.shape[0], 1), bias)
+        self.input_features = np.concatenate([bias_column, features], axis=1)
 
     def get_dataset_info(self):
         """Obtener información básica sobre el dataset"""
