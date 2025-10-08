@@ -5,6 +5,11 @@ name = "pypi"
 
 [packages]
 numpy = "*"
+keras = "*"
+matplotlib = "*"
+tensorflow = "*"
+seaborn = "*"
+scikit-learn = "*"
 
 [dev-packages]
 
