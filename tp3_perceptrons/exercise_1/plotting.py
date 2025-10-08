@@ -20,7 +20,7 @@ def plot_training_history(perceptron, function_name):
 
 def plot_decision_lines_evolution(perceptron, X, y, function_name):
     if not perceptron.training_history:
-        print("No hay historial de entrenamiento para mostrar las rectas de decisión")
+        print("No hay historial de entrenamiento para mostrar el hiperplano de separación")
         return
     
     # Convertir datos a arrays de numpy
@@ -75,9 +75,9 @@ def plot_decision_lines_evolution(perceptron, X, y, function_name):
                 y_line = -(w1 * x_line + bias) / w2
                 mask = (y_line >= y_min) & (y_line <= y_max)
                 plt.plot(x_line[mask], y_line[mask], 'black', linewidth=3, 
-                        label=f'Recta: {w1:.2f}x₁ + {w2:.2f}x₂ + {bias:.2f} = 0')
+                        label=f'Hiperplano: {w1:.2f}x₁ + {w2:.2f}x₂ + {bias:.2f} = 0')
             
-            plt.title(f'Recta de Decisión - Época {epoch_num} - Función {function_name}\nErrores: {real_errors}', 
+            plt.title(f'Hiperplano de Separación - Época {epoch_num} - Función {function_name}\nErrores: {real_errors}', 
                      fontsize=14, fontweight='bold')
             plt.xlabel('x₁', fontsize=12)
             plt.ylabel('x₂', fontsize=12)
