@@ -1,11 +1,77 @@
-{
-  "module": "exercise_3.exercise_3_3",
-  "config": {
-    "layer_sizes": [35,50,10],
-    "activation": "sigmoid",
-    "eta": 0.02,
-    "alpha": 0.9,
-    "optimizer": "adam",
-    "batch_size": 1
+[
+  {
+    "name": "digits_tanh_sgd_online",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 10],
+      "activation": "tanh",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "digits_tanh_sgd_minibatch8",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 10],
+      "activation": "tanh",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 8,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "digits_tanh_sgd_batch",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 10],
+      "activation": "tanh",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": null,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "digits_tanh_momentum_batch",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 10],
+      "activation": "tanh",
+      "eta": 0.05,
+      "optimizer": "momentum",
+      "batch_size": null,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "digits_tanh_adam_online",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 10],
+      "activation": "tanh",
+      "eta": 0.05,
+      "optimizer": "adam",
+      "batch_size": null,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
   }
-}
+]

@@ -1,0 +1,184 @@
+[
+  {
+    "name": "baseline_tanh_sgd",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 1],
+      "activation": "tanh",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": null,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "tanh_eta_0.01",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 1],
+      "activation": "tanh",
+      "eta": 0.01,
+      "optimizer": "sgd",
+      "batch_size": null,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "tanh_eta_0.1",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 1],
+      "activation": "tanh",
+      "eta": 0.1,
+      "optimizer": "sgd",
+      "batch_size": null,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "tanh_eta_0.2",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 1],
+      "activation": "tanh",
+      "eta": 0.2,
+      "optimizer": "sgd",
+      "batch_size": null,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "sigmoid_eta_0.05",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 1],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": null,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "tanh_optimizer_momentum",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 1],
+      "activation": "tanh",
+      "eta": 0.05,
+      "optimizer": "momentum",
+      "batch_size": null,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "tanh_optimizer_adam",
+    "module": "exercise_3.exercise_3_2",
+    "config": {
+      "layer_sizes": [35, 15, 1],
+      "activation": "tanh",
+      "eta": 0.05,
+      "optimizer": "adam",
+      "batch_size": null,
+      "epochs": 5000,
+      "epsilon": 1e-4,
+      "alpha": 0.9,
+      "seed": 123
+    }
+  },
+  {
+    "name": "tanh_sgd_batch1_online",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,1], "activation": "tanh", "eta": 0.05, "optimizer": "sgd",
+      "batch_size": 1, "epochs": 5000, "epsilon": 1e-4, "alpha": 0.9, "seed": 123 }
+  },
+  {
+    "name": "tanh_sgd_batch5_minibatch",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,1], "activation": "tanh", "eta": 0.05, "optimizer": "sgd",
+      "batch_size": 5, "epochs": 5000, "epsilon": 1e-4, "alpha": 0.9, "seed": 123 }
+  },
+  {
+    "name": "tanh_sgd_batch10_minibatch",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,1], "activation": "tanh", "eta": 0.05, "optimizer": "sgd",
+      "batch_size": 10, "epochs": 5000, "epsilon": 1e-4, "alpha": 0.9, "seed": 123 }
+  },
+
+  {
+    "name": "tanh_momentum_alpha_0_70",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,1], "activation": "tanh", "eta": 0.05, "optimizer": "momentum",
+      "batch_size": null, "epochs": 5000, "epsilon": 1e-4, "alpha": 0.7, "seed": 123 }
+  },
+  {
+    "name": "tanh_momentum_alpha_0_95",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,1], "activation": "tanh", "eta": 0.05, "optimizer": "momentum",
+      "batch_size": null, "epochs": 5000, "epsilon": 1e-4, "alpha": 0.95, "seed": 123 }
+  },
+
+  {
+    "name": "tanh_arch_35_10_1",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,10,1], "activation": "tanh", "eta": 0.05, "optimizer": "sgd",
+      "batch_size": null, "epochs": 5000, "epsilon": 1e-4, "alpha": 0.9, "seed": 123 }
+  },
+  {
+    "name": "tanh_arch_35_15_5_1",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,5,1], "activation": "tanh", "eta": 0.05, "optimizer": "sgd",
+      "batch_size": null, "epochs": 5000, "epsilon": 1e-4, "alpha": 0.9, "seed": 123 }
+  },
+
+  {
+    "name": "tanh_sgd_epochs_1000_epsilon_1e-3",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,1], "activation": "tanh", "eta": 0.05, "optimizer": "sgd",
+      "batch_size": null, "epochs": 1000, "epsilon": 1e-3, "alpha": 0.9, "seed": 123 }
+  },
+  {
+    "name": "tanh_sgd_epochs_10000_epsilon_1e-5",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,1], "activation": "tanh", "eta": 0.05, "optimizer": "sgd",
+      "batch_size": null, "epochs": 10000, "epsilon": 1e-5, "alpha": 0.9, "seed": 123 }
+  },
+
+  {
+    "name": "adam_minibatch10",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,1], "activation": "tanh", "eta": 0.05, "optimizer": "adam",
+      "batch_size": 10, "epochs": 5000, "epsilon": 1e-4, "alpha": 0.9, "seed": 123 }
+  },
+
+  {
+    "name": "sigmoid_momentum_eta_0_05",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,1], "activation": "sigmoid", "eta": 0.05, "optimizer": "momentum",
+      "batch_size": null, "epochs": 5000, "epsilon": 1e-4, "alpha": 0.9, "seed": 123 }
+  },
+  {
+    "name": "sigmoid_sgd_batch10",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "layer_sizes": [35,15,1], "activation": "sigmoid", "eta": 0.05, "optimizer": "sgd",
+      "batch_size": 10, "epochs": 5000, "epsilon": 1e-4, "alpha": 0.9, "seed": 123 }
+  }
+]

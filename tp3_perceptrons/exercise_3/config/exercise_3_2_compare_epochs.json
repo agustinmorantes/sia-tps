@@ -1,0 +1,29 @@
+[
+  {
+    "name": "tanh_sgd_epochs_1000_eps_1e-3",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "run_name": "tanh_sgd_eta0.05_epochs1000",
+      "layer_sizes": [35,15,1], "activation": "tanh",
+      "eta": 0.05, "optimizer": "sgd",
+      "batch_size": null, "epochs": 1000, "epsilon": 1e-3,
+      "alpha": 0.9, "seed": 123 }
+  },
+  {
+    "name": "tanh_sgd_epochs_5000_eps_1e-3",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "run_name": "tanh_sgd_eta0.05_epochs5000",
+      "layer_sizes": [35,15,1], "activation": "tanh",
+      "eta": 0.05, "optimizer": "sgd",
+      "batch_size": null, "epochs": 5000, "epsilon": 1e-3,
+      "alpha": 0.9, "seed": 123 }
+  },
+  {
+    "name": "tanh_sgd_epochs_10000_eps_1e-3",
+    "module": "exercise_3.exercise_3_2",
+    "config": { "run_name": "tanh_sgd_eta0.05_epochs10000",
+      "layer_sizes": [35,15,1], "activation": "tanh",
+      "eta": 0.05, "optimizer": "sgd",
+      "batch_size": null, "epochs": 10000, "epsilon": 1e-3,
+      "alpha": 0.9, "seed": 123 }
+  }
+]
