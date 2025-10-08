@@ -52,7 +52,6 @@ def run_experiment_from_config(config):
     # Cargar datos
     print("\nCargando datos MNIST...")
     classifier.load_data(
-        validation_split=exp_config['validation_split'],
         sample_size=exp_config['sample_size']
     )
     

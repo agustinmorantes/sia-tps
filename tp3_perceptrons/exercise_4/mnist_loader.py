@@ -59,24 +59,3 @@ def preprocess_mnist(train_images, train_labels, test_images, test_labels, norma
     
     return train_images, train_labels, test_images, test_labels
 
-def create_validation_set(X_train, y_train, validation_split=0.2):
-    """Crea conjunto de validación del conjunto de entrenamiento"""
-    n_samples = X_train.shape[0]
-    n_val = int(n_samples * validation_split)
-    
-    # Shuffle indices
-    indices = np.random.permutation(n_samples)
-    
-    # Split
-    val_indices = indices[:n_val]
-    train_indices = indices[n_val:]
-    
-    X_val = X_train[val_indices]
-    y_val = y_train[val_indices]
-    X_train_new = X_train[train_indices]
-    y_train_new = y_train[train_indices]
-    
-    print(f"Conjunto de validación creado: {X_val.shape[0]} muestras")
-    print(f"Conjunto de entrenamiento: {X_train_new.shape[0]} muestras")
-    
-    return X_train_new, y_train_new, X_val, y_val

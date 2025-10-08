@@ -6,7 +6,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from multi_layer_perceptron import MultiLayerPerceptron
-from mnist_loader import load_mnist, preprocess_mnist, create_validation_set
+from mnist_loader import load_mnist, preprocess_mnist
 
 class MNISTClassifier:
     def __init__(self, layer_sizes=[784, 128, 64, 10], activation="tanh", 
@@ -33,9 +33,7 @@ class MNISTClassifier:
         self.model = None
         self.training_history = {
             'train_loss': [],
-            'val_loss': [],
-            'train_acc': [],
-            'val_acc': []
+            'train_acc': []
         }
     
     def create_model(self):
@@ -61,7 +59,7 @@ class MNISTClassifier:
             total += self.layer_sizes[i + 1]
         return total
     
-    def load_data(self, validation_split=0.2, sample_size=None):
+    def load_data(self, sample_size=None):
         """Carga y preprocesa los datos MNIST"""
         print("Cargando datos MNIST...")
         
@@ -80,16 +78,9 @@ class MNISTClassifier:
             train_images, train_labels, test_images, test_labels
         )
         
-        # Crear conjunto de validación
-        X_train, y_train, X_val, y_val = create_validation_set(
-            X_train, y_train, validation_split
-        )
-        
         self.data = {
             'X_train': X_train,
             'y_train': y_train,
-            'X_val': X_val,
-            'y_val': y_val,
             'X_test': X_test,
             'y_test': y_test,
             'train_labels_orig': train_labels_orig,
@@ -98,7 +89,6 @@ class MNISTClassifier:
         
         print(f"Datos preparados:")
         print(f"  Train: {X_train.shape}")
-        print(f"  Validation: {X_val.shape}")
         print(f"  Test: {X_test.shape}")
         
         return self.data
@@ -119,25 +109,18 @@ class MNISTClassifier:
                 epsilon=1e-10  # Muy pequeño para no parar prematuramente
             )
             
-            # Evaluar en train y validation
+            # Evaluar en train
             train_pred = self.model.predict(self.data['X_train'])
-            val_pred = self.model.predict(self.data['X_val'])
             
             train_loss = self._calculate_loss(self.data['y_train'], train_pred)
-            val_loss = self._calculate_loss(self.data['y_val'], val_pred)
-            
             train_acc = self._calculate_accuracy(self.data['y_train'], train_pred)
-            val_acc = self._calculate_accuracy(self.data['y_val'], val_pred)
             
             # Guardar historial
             self.training_history['train_loss'].append(train_loss)
-            self.training_history['val_loss'].append(val_loss)
             self.training_history['train_acc'].append(train_acc)
-            self.training_history['val_acc'].append(val_acc)
             
             if verbose and epoch % 5 == 0:
-                print(f"Época {epoch:3d}: Train Loss={train_loss:.4f}, Val Loss={val_loss:.4f}, "
-                      f"Train Acc={train_acc:.4f}, Val Acc={val_acc:.4f}")
+                print(f"Época {epoch:3d}: Train Loss={train_loss:.4f}, Train Acc={train_acc:.4f}")
         
         print("Entrenamiento completado")
     

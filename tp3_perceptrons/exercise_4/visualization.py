@@ -10,8 +10,7 @@ def plot_training_history(history, save_path=None):
     
     # Loss
     ax1.plot(epochs, history['train_loss'], 'b-', label='Train Loss')
-    ax1.plot(epochs, history['val_loss'], 'r-', label='Validation Loss')
-    ax1.set_title('Training and Validation Loss')
+    ax1.set_title('Training Loss')
     ax1.set_xlabel('Epochs')
     ax1.set_ylabel('Loss')
     ax1.legend()
@@ -19,8 +18,7 @@ def plot_training_history(history, save_path=None):
     
     # Accuracy
     ax2.plot(epochs, history['train_acc'], 'b-', label='Train Accuracy')
-    ax2.plot(epochs, history['val_acc'], 'r-', label='Validation Accuracy')
-    ax2.set_title('Training and Validation Accuracy')
+    ax2.set_title('Training Accuracy')
     ax2.set_xlabel('Epochs')
     ax2.set_ylabel('Accuracy')
     ax2.legend()
@@ -157,11 +155,9 @@ def plot_learning_curves_comparison(histories_dict, save_path=None):
         
         # Loss
         ax1.plot(epochs, history['train_loss'], label=f'{name} - Train', linestyle='-')
-        ax1.plot(epochs, history['val_loss'], label=f'{name} - Val', linestyle='--')
         
         # Accuracy
         ax2.plot(epochs, history['train_acc'], label=f'{name} - Train', linestyle='-')
-        ax2.plot(epochs, history['val_acc'], label=f'{name} - Val', linestyle='--')
     
     ax1.set_title('Comparación de Loss')
     ax1.set_xlabel('Epochs')

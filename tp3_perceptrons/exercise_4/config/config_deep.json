@@ -9,7 +9,6 @@
     "seed": 42,
     "epochs": 50,
     "sample_size": 10000,
-    "validation_split": 0.2,
     "verbose": true
   }
 }
