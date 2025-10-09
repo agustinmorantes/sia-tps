@@ -1,0 +1,14 @@
+{
+  "module": "exercise_4.mnist_classifier",
+  "config": {
+    "layer_sizes": [784, 128, 64, 10],
+    "activation": "tanh",
+    "optimizer": "momentum",
+    "eta": 0.001,
+    "batch_size": 32,
+    "seed": 42,
+    "epochs": 40,
+    "sample_size": 5000,
+    "verbose": true
+  }
+}
