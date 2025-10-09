@@ -1,0 +1,12 @@
+{
+    "name": "base_momentum",
+    "layer_sizes": [35, 15, 1],
+    "activation": "tanh",
+    "eta": 0.01,
+    "optimizer": "sgd",
+    "batch_size": null,
+    "epochs": 5,
+    "epsilon": 1e-8,
+    "alpha": 0.9,
+    "seed": 123
+}

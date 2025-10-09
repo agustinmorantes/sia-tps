@@ -1,0 +1,12 @@
+{
+    "name": "base_eta_0.01",
+    "layer_sizes": [35, 15, 1],
+    "activation": "tanh",
+    "eta": 0.01,
+    "optimizer": "sgd",
+    "batch_size": null,
+    "epochs": 50,
+    "epsilon": 1e-4,
+    "alpha": 0.9,
+    "seed": 123
+}
