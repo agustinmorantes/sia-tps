@@ -1,0 +1,634 @@
+[
+  {
+    "name": "baseline",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "noise_0.2",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.2
+    }
+  },
+  {
+    "name": "noise_0.4",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.4
+    }
+  },
+  {
+    "name": "noise_0.6",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.6
+    }
+  },
+  {
+    "name": "noise_0.8",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "noise_1.0",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 1.0
+    }
+  },
+  {
+    "name": "noise_1.2",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 1.2
+    }
+  },
+  {
+    "name": "noise_1.4",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 1.4
+    }
+  },
+  {
+    "name": "noise_1.6",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 1.6
+    }
+  },
+  {
+    "name": "noise_1.8",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 1.8
+    }
+  },
+  {
+    "name": "noise_2.0",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 2.0
+    }
+  },
+  {
+    "name": "tanh_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "tanh",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "tanh_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "tanh",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "eta_0.01_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.01,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "eta_0.01_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.01,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "eta_0.05_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "eta_0.05_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "eta_0.1_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.1,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "eta_0.1_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.1,
+      "optimizer": "sgd",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "momentum_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "momentum",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "momentum_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.01,
+      "optimizer": "momentum",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "adam_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "adam",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "adam_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.01,
+      "optimizer": "adam",
+      "batch_size": 1,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "batch_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": null,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "batch_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.01,
+      "optimizer": "sgd",
+      "batch_size": null,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "minibatch_2_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 2,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "minibatch_2_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.01,
+      "optimizer": "sgd",
+      "batch_size": 2,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "minibatch_5_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 5,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "minibatch_5_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.01,
+      "optimizer": "sgd",
+      "batch_size": 5,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "alpha_0.5_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "momentum",
+      "batch_size": 5,
+      "alpha": 0.5,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "alpha_0.5_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.01,
+      "optimizer": "momentum",
+      "batch_size": 5,
+      "alpha": 0.5,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "big_middle_layer_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        100,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 5,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "big_middle_layer_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        100,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.01,
+      "optimizer": "sgd",
+      "batch_size": 5,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  },
+  {
+    "name": "deep_high_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.05,
+      "optimizer": "sgd",
+      "batch_size": 5,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.8
+    }
+  },
+  {
+    "name": "deep_no_noise",
+    "module": "exercise_3_3",
+    "config": {
+      "layer_sizes": [
+        35,
+        50,
+        50,
+        10
+      ],
+      "activation": "sigmoid",
+      "eta": 0.01,
+      "optimizer": "sgd",
+      "batch_size": 5,
+      "alpha": 0.9,
+      "seed": 123,
+      "noise_scale": 0.0
+    }
+  }
+]
