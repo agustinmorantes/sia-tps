@@ -25,11 +25,24 @@ python main.py config/ej2_tanh.json
 ### **Ejercicio 3: Redes Neuronales Avanzadas**
 Implementa redes neuronales para clasificación de dígitos manuscritos.
 
+Si se quiere correr el item 2 (discriminación de paridad) debemos ingresar a la carpeta donnde se encuentra y correr el main.py con alguna de las configuraciones presentes en la carpeta config.
+```bash
+cd exercise_3_2
+python main.py config/config.json
+```
+
+Si se quiere correr el item 3 (discriminación de dígitos) debemos ingresar a la carpeta donnde se encuentra y correr el main.py con el archivo config/config_3_3.json que ya cuenta con todos los casos que se tuvieron en cuenta para el análisis.
+```bash
+cd exercise_3_3
+python main.py config/config_3_3.json
+```
+
+La carpeta exercise_3 se utilizó para probar el funcionamiento del multi_layer_perceptron. Si se quieren correr alguno de los ejercicios allí se debe:
 ```bash
 cd exercise_3
-python main.py config/exercise_3_1.json
-python main.py config/exercise_3_2.json
-python main.py config/exercise_3_3.json
+python main.py config/config_3_1.json
+python main.py config/config_3_2.json
+python main.py config/config_3_3.json
 ```
 
 ### **Ejercicio 4: Clasificación MNIST**
@@ -60,6 +73,19 @@ tp3_perceptrons/
 │   ├── exercise_3_2.py
 │   ├── exercise_3_3.py
 │   └── results_3_2/
+├── exercise_3_2/                  
+│   ├── main.py
+│   ├── config/
+│   ├── resources
+│   └── results/
+├── exercise_3_3/                  
+│   ├── main.py
+│   ├── exercise_3_3.py
+│   ├── config/
+│   ├── graphs/
+│   ├── resources/
+│   ├── results/
+│   └── utils/
 ├── exercise_4/                  
 │   ├── main.py
 │   ├── mnist_classifier.py
@@ -73,4 +99,4 @@ tp3_perceptrons/
 └── README.md
 ```
 
-**Nota**: Cada ejercicio es independiente y puede ejecutarse por separado. Los resultados se guardan automáticamente en las carpetas correspondientes.
+**Nota**: Cada ejercicio es independiente y puede ejecutarse por separado. Los resultados se guardan automáticamente en las carpetas correspondientes. Nótese que el ejercicio 3 tiene dos carpetas para cada item: exercise_3_2 y exercise_3_3
