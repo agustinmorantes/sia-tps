@@ -4,6 +4,7 @@
     "layer_sizes": [2,2,1],
     "activation": "tanh",
     "eta": 0.05,
-    "optimizer": "adam"
+    "optimizer": "adam",
+    "seed": 123
   }
 }

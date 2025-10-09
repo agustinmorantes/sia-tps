@@ -3,6 +3,7 @@
   "config": {
     "layer_sizes": [35,15,1],
     "activation": "tanh",
-    "eta": 0.05
+    "eta": 0.05,
+    "seed": 123
   }
 }
