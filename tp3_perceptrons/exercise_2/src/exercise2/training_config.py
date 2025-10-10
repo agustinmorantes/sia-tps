@@ -21,7 +21,7 @@ class PerceptronTrainingConfig:
             raise ValueError("La configuración de entrenamiento no ha sido inicializada")
         return PerceptronTrainingConfig._instance
 
-    # Patrón Singleton
+  
     _instance = None
 
     def __new__(cls, **kwargs):

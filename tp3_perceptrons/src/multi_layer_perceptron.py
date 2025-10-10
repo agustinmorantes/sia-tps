@@ -54,24 +54,24 @@ class MultiLayerPerceptron:
             activations.append(a)
         return activations
 
-    def backward(self, activations, Y):
-        deltas = []
-        delta_L = (activations[-1] - Y) * self.activation.derivative(activations[-1])
+    def backward(self, activations, Y):   
+        deltas = [] #lista de deltas ,cada delya es una lista de  errores de cada neurona de cada capa 
+        delta_L = (activations[-1] - Y) * self.activation.derivative(activations[-1]) #δ^(L) = (predicción - valor_real) × θ'(activación) para la ultima capa
         deltas.insert(0, delta_L)
 
-        for i in reversed(range(self.n_layers - 1)):
-            delta = np.dot(deltas[0], self.weights[i+1].T) * self.activation.derivative(activations[i+1])
+        for i in reversed(range(self.n_layers - 1)): #comienzo a propagar el error hacia atras
+            delta = np.dot(deltas[0], self.weights[i+1].T) * self.activation.derivative(activations[i+1]) #formula del proce de aprendizaje 
             deltas.insert(0, delta)
         return deltas
 
     def update_weights(self, activations, deltas):
         self.t += 1
-        for i in range(self.n_layers):
-            grad_w = np.dot(activations[i].T, deltas[i])
-            grad_b = np.sum(deltas[i], axis=0, keepdims=True)
+        for i in range(self.n_layers): # se repite para cada capa 
+            grad_w = np.dot(activations[i].T, deltas[i]) #cuanto cambia el peso de la capa i 
+            grad_b = np.sum(deltas[i], axis=0, keepdims=True) #cuanto cambia el bias de la capa i 
 
             if self.optimizer == 'sgd':
-                self.weights[i] -= self.eta * grad_w
+                self.weights[i] -= self.eta * grad_w #taza de aprendizaje * cuanto cambia el peso de la capa i 
                 self.biases[i]  -= self.eta * grad_b
 
             elif self.optimizer == 'momentum':
@@ -96,9 +96,9 @@ class MultiLayerPerceptron:
                 v_hat_b = self.v_b[i] / (1 - beta2**self.t)
                 self.biases[i] -= self.eta * m_hat_b / (np.sqrt(v_hat_b) + eps)
 
-    def train(self, X, Y, epochs=10000, epsilon=1e-5):
+    def train(self, X, Y, epochs=10000, epsilon=1e-5): #X es una matriz con 10 filas y 35 columnas donde cada  fila representa un digito (0-9) 
+        effective_batch_size = n_samples if self.batch_size is None else self.batch_size #Y es una matriz con 10 filas y 1 columna,donde cada fila es 1 o -1
         n_samples = X.shape[0]
-        effective_batch_size = n_samples if self.batch_size is None else self.batch_size
 
         for epoch in range(epochs):
             indices = np.random.permutation(n_samples)
@@ -106,9 +106,9 @@ class MultiLayerPerceptron:
             epoch_mse = 0
             n_batches = 0
 
-            for start_idx in range(0, n_samples, effective_batch_size):
+            for start_idx in range(0, n_samples, effective_batch_size): #effective_batch_size es el tamaño de cada batch
                 end_idx = min(start_idx + effective_batch_size, n_samples)
-                X_batch, Y_batch = X_shuffled[start_idx:end_idx], Y_shuffled[start_idx:end_idx]
+                X_batch, Y_batch = X_shuffled[start_idx:end_idx], Y_shuffled[start_idx:end_idx] #me quedo  con el batch de X y de Y
                 activations = self.forward(X_batch)
                 deltas = self.backward(activations, Y_batch)
                 self.update_weights(activations, deltas)

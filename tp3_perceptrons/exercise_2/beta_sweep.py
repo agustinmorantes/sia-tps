@@ -23,7 +23,6 @@ def run_beta_sweep(betas: List[float]) -> List[Tuple[float, float, float]]:
     with open(config_path, "r") as f:
         base_config = json.load(f)
 
-    # Inicializar configuración de entrenamiento (singleton)
     PerceptronTrainingConfig(
         epsilon=base_config["epsilon"],
         seed=base_config.get("seed", None),
@@ -35,38 +34,38 @@ def run_beta_sweep(betas: List[float]) -> List[Tuple[float, float, float]]:
 
     # Cargar dataset y preparar splits una sola vez
     data_handler = Exercise2DataHandler(dataset_path)
-    target_min = np.min(data_handler.target_values)
+    target_min = np.min(data_handler.target_values)  # me guardo el y min  (obtuve todos los y en Exercise2DataHandler)
     target_max = np.max(data_handler.target_values)
-    fold_splits = data_handler.create_k_fold_splits(k_folds=7)
+    fold_splits = data_handler.create_k_fold_splits(k_folds=7) # me devuelve una lista con k elementos con train_inputs, train_targets, test_inputs, test_targets
 
     results: List[Tuple[float, float, float]] = []
     for beta in betas:
         # Crear función de activación LOGISTIC con el beta deseado
         activation = ActivationFunction.create_activation_function(
             "LOGISTIC",
-            {"beta": float(beta)}
+            {"beta": float(beta)} #voy creando la funcion con los distintos betas que quiero probar
         )
-        activation.configure_output_normalization(target_min, target_max)
+        activation.configure_output_normalization(target_min, target_max) #normaliza los valores de y entre 0 y 1
 
         # Crear optimizador
-        optimizer_class = GradientDescentOptimizer.create_optimizer(
+        optimizer_class = GradientDescentOptimizer.create_optimizer( #obtiene el tipo de optimizador el json 
             base_config["learning"]["optimizer"]["type"]
         )
-        optimizer = optimizer_class(base_config["learning"]["optimizer"]["options"])
+        optimizer = optimizer_class(base_config["learning"]["optimizer"]["options"]) #toma el learning rate del json
 
         training_mse_list: List[float] = []
         testing_mse_list: List[float] = []
 
         print(f"=== Beta = {beta} (LOGISTIC) ===")
         for train_inputs, train_targets, test_inputs, test_targets in fold_splits:
-            initial_weights = data_handler.initialize_random_weights(len(train_inputs[0]))
-            model = SingleLayerPerceptronModel(activation, optimizer, initial_weights)
+            initial_weights = data_handler.initialize_random_weights(len(train_inputs[0])) #Crea 4 pesos aleatorios para cada iteración
+            model = SingleLayerPerceptronModel(activation, optimizer, initial_weights) #crea el modelo con logistic, gradient descent y los pesos iniciales
             model.train_model(train_inputs, train_targets)
-            training_mse_list.append(model.calculate_mean_squared_error(train_inputs, train_targets))
-            testing_mse_list.append(model.calculate_mean_squared_error(test_inputs, test_targets))
+            training_mse_list.append(model.calculate_mean_squared_error(train_inputs, train_targets)) #Mse con los datos finales de entrenamiento
+            testing_mse_list.append(model.calculate_mean_squared_error(test_inputs, test_targets)) #Mse con los datos finales de prueba
 
-        train_mse = float(np.mean(training_mse_list))
-        test_mse = float(np.mean(testing_mse_list))
+        train_mse = float(np.mean(training_mse_list)) #Mse promedio de los datos finales de entrenamiento
+        test_mse = float(np.mean(testing_mse_list)) #Mse promedio de los datos finales de prueba
         print(f"MSE Entrenamiento: {train_mse:.6f}")
         print(f"MSE Prueba:        {test_mse:.6f}")
         results.append((float(beta), train_mse, test_mse))
@@ -103,7 +102,7 @@ def plot_results(results: List[Tuple[float, float, float]], png_path: str) -> No
 
 if __name__ == "__main__":
     # Barrido amplio de betas (incluye valores pequeños y grandes)
-    betas = [0.1, 0.2, 0.3, 0.7, 1.0, 2.0, 4.0, 5.0]
+    betas = [0.1, 0.2, 0.3, 0.7, 1.0, 1.5]
     results = run_beta_sweep(betas)
 
     csv_out = os.path.join(os.path.dirname(__file__), "resources", "beta_mse_batch.csv")
