@@ -1,6 +1,32 @@
 import numpy as np
+import json
+from datetime import datetime
 from KohonenNetwork import KohonenNetwork
 from data_helper import load_and_standardize_europe_data
+
+def save_clustering_results(clusters, k, som_weights):
+    """Guarda los resultados del clustering en un archivo JSON con timestamp"""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f'clustering_results_{timestamp}.json'
+    
+    results = {
+        'clusters': clusters,
+        'grid_size': k,
+        'total_clusters': len(clusters),
+        'timestamp': timestamp,
+        'weights': som_weights.tolist()  # Guardar pesos para calcular heatmap
+    }
+    
+    with open(filename, 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    # También guardar el último resultado como "latest"
+    with open('clustering_results_latest.json', 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    print(f"\n✓ Resultados guardados en: {filename}")
+    print(f"✓ Última versión en: clustering_results_latest.json")
+    return filename
 
 def main():
     
@@ -14,12 +40,12 @@ def main():
     
     # 2. Crear red
     print("Creando red de Kohonen...")
-    som = KohonenNetwork(k=5, learning_rate=1.0, columns=7, neighborhood_ratio=3, data=X_standardized)
+    som = KohonenNetwork(k=3, learning_rate=1.0, columns=7, neighborhood_ratio=3, data=X_standardized)
     print("Red creada con pesos inicializados usando muestras de los datos")
     
     # 3. Entrenar
     print("Entrenando...")
-    som.train(X_standardized, epochs=500)
+    som.train(X_standardized, epochs=3500)
     
     # 4. Clustering
     print("\nResultados:")
@@ -40,6 +66,16 @@ def main():
             print(f"  - {country}")
     
     print(f"\nTotal clusters: {len(clusters)}")
+    
+    # 6. Guardar resultados (incluyendo pesos reales)
+    filename = save_clustering_results(clusters, som.k, som.map)
+    
+    # 7. Generar visualización
+    print("\n" + "="*50)
+    print("Para visualizar los resultados, ejecuta:")
+    print(f"  python visualize_clusters.py {filename}")
+    print("  o simplemente: python visualize_clusters.py")
+    print("="*50)
 
 if __name__ == "__main__":
     main()

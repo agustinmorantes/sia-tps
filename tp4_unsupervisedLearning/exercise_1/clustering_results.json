@@ -1,0 +1,15 @@
+{
+  "clusters": {
+    "(0, 0)": ["Bulgaria", "Croatia", "Estonia", "Ukraine"],
+    "(0, 1)": ["Greece", "Poland", "Portugal"],
+    "(0, 2)": ["Finland", "Italy", "Spain", "United Kingdom"],
+    "(1, 0)": ["Hungary", "Latvia", "Lithuania", "Slovakia"],
+    "(1, 2)": ["Germany", "Ireland", "Sweden"],
+    "(2, 0)": ["Czech Republic", "Slovenia"],
+    "(2, 1)": ["Austria", "Belgium", "Denmark", "Netherlands"],
+    "(2, 2)": ["Iceland", "Luxembourg", "Norway", "Switzerland"]
+  },
+  "grid_size": 3,
+  "total_clusters": 8
+}
+
