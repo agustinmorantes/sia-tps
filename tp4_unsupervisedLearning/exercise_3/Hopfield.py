@@ -143,6 +143,8 @@ def main():
     states = hopfield.run(query_pattern)
     print("\n" + "="*50)
     print("Iteraciones: ", len(states))
+    print("Patrón de consulta (original sin ruido):")
+    PatternLoader().visualize_pattern(pattern)
     print("Estado final:")
     PatternLoader().visualize_pattern(states[-1].flatten())
 
