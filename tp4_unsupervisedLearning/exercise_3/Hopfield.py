@@ -77,10 +77,10 @@ class HopfieldNetwork:
         states = [query_pattern]
 
         while True:
-            current = np.sign(np.dot(self.weight_matrix, current))
+            current = np.sign(np.dot(self.weight_matrix, current)) #s(t+1) = sign(W × s(t))
             states.append(current)
 
-            if len(states) >= 3 and np.array_equal(states[-1], states[-2]) and np.array_equal(states[-2], states[-3]):
+            if len(states) >= 3 and np.array_equal(states[-1], states[-2]) and np.array_equal(states[-2], states[-3]): #Se requieren 3 iteraciones consecutivas iguales
                 return states
 
     # TODO: revisar implementación de crosstalk
@@ -97,13 +97,13 @@ class HopfieldNetwork:
         crosstalk_value = np.zeros((N, 1))
 
         # Sumar sobre todos los patrones almacenados
-        for mu in range(p):
-            product = np.dot(K[:, mu], query_pattern)
-            crosstalk_value += (K[:, mu] * product).reshape(-1, 1)
+        for mu in range(p): #Voy alterando por patrones 
+            product = np.dot(K[:, mu], query_pattern)  #suma todos los elementos del patron corrompido 
+            crosstalk_value += (K[:, mu] * product).reshape(-1, 1) #multiplica ese resultado con el patron_i almacenado 
 
-        crosstalk_value /= N
+        crosstalk_value /= N #con esto modularizo 
 
-        return crosstalk_value
+        return crosstalk_value #devuelvo un vector de 25 elmentos que combina información de todos los patrones y resume hacia qué deberia tender cada pixel.
 
 
 def main():
@@ -133,12 +133,12 @@ def main():
 
     # PASO 3: Iteración hasta convergencia
     pattern = hopfield.patterns[1]
-    query_pattern = np.array(pattern) + np.random.normal(0, 1, pattern.shape)
+    query_pattern = np.array(pattern) + np.random.normal(0, 1, pattern.shape) # simular un patrón parcialmente dañado para verificar la recuperación
 
-    crosstalk = hopfield.crosstalk(query_pattern)
-    print("\n" + "="*50)
-    print("Crosstalk del patrón de consulta:")
-    print(crosstalk.flatten())
+    crosstalk = hopfield.crosstalk(query_pattern) # toma un patrón de consulta y lo compara con los patrones almacenados para estimar hacia cuál debería converger
+    print("\n" + "="*50)                        #devuelvo un vector de 25 elmentos que combina información de todos los patrones y resume hacia qué deberia tender cada pixel
+    print("Crosstalk del patrón de consulta:") #(- es espacio ,+ es * )
+    print(crosstalk.flatten())                  #si el crosstalk  devuelve un vector con valores grandes,eso indica que los patrones no son ortogonales entre sí,y que hay interferencia fuerte entre ellos
 
     states = hopfield.run(query_pattern)
     print("\n" + "="*50)

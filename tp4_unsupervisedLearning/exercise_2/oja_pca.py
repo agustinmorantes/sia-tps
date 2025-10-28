@@ -30,7 +30,7 @@ def load_and_preprocess_data(csv_path):
     
     # Normalizar los datos (importante para PCA)
     scaler = StandardScaler()
-    normalized_data = scaler.fit_transform(data)
+    normalized_data = scaler.fit_transform(data) # x_normalizado = (x - μ) / σ
     
     # Agregar columna de bias
     bias_column = np.ones((normalized_data.shape[0], 1))
@@ -47,7 +47,7 @@ def train_oja_pca(input_data, learning_rate=0.01, max_epochs=1000):
     PerceptronTrainingConfig(epsilon=1e-5, seed=42, maxEpochs=max_epochs)
     
     # Crear función de activación lineal (necesaria para PCA)
-    activation_function = ActivationFunction.create_activation_function("LINEAR")
+    activation_function = ActivationFunction.create_activation_function("LINEAR") ##w0*1 + w1*x1 + w2*x2 + w3*x3
     
     # Crear optimizador con regla de Oja
     oja_optimizer = OjaRuleOptimizer({"rate": learning_rate})

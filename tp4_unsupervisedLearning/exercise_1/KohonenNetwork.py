@@ -51,7 +51,7 @@ class KohonenNetwork:
     def _update_single_neuron(self, i, j, input_vec, current_lr):
         current_weights = self.map[i, j]
         weight_difference = input_vec - current_weights
-        self.map[i, j] = current_weights + current_lr * weight_difference # W_j^(i+1) = W_j^i + η(i) * (X^p - W_j^i)
+        self.map[i, j] = current_weights + current_lr * weight_difference # W_j^(i+1) = W_j^i + η(i) * (X^p - W_j^i) con n(i)=learning_rate y x^p=el registro de entrada 
         
     def train(self, X, epochs):
         n_samples = X.shape[0]
