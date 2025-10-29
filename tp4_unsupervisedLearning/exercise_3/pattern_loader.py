@@ -54,7 +54,7 @@ class PatternLoader: #Carga patrones desde archivos .txt
      
         if selected_patterns is None:
             
-            selected_patterns = ['a.txt', 'e.txt', 'j.txt', 'o.txt']
+            selected_patterns = ['a.txt', 't.txt', 'x.txt', 'j.txt']
         
         for pattern_file in selected_patterns:
             file_path = os.path.join(resources_dir, pattern_file)

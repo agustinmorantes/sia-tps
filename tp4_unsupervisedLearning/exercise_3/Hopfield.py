@@ -10,8 +10,8 @@ class HopfieldNetwork:
         self.pattern_names = []  # Nombres de los patrones
         self.weight_matrix = None  # Matriz de pesos W
         
-    def load_stored_patterns(self, resources_dir="Resources"):
-        self.pattern_loader.load_stored_patterns(resources_dir)
+    def load_stored_patterns(self, resources_dir="Resources", selected_patterns:list[str]=None):
+        self.pattern_loader.load_stored_patterns(resources_dir, selected_patterns)
         self.patterns = self.pattern_loader.get_patterns_as_vectors()
         self.pattern_names = self.pattern_loader.get_pattern_names()
     
@@ -80,7 +80,7 @@ class HopfieldNetwork:
             current = np.sign(np.dot(self.weight_matrix, current)) #s(t+1) = sign(W × s(t))
             states.append(current)
 
-            if len(states) >= 3 and np.array_equal(states[-1], states[-2]) and np.array_equal(states[-2], states[-3]): #Se requieren 3 iteraciones consecutivas iguales
+            if len(states) >= 2 and np.array_equal(states[-1], states[-2]): #Se requieren 2 iteraciones consecutivas iguales
                 return states
 
     # TODO: revisar implementación de crosstalk
@@ -106,7 +106,20 @@ class HopfieldNetwork:
         return crosstalk_value #devuelvo un vector de 25 elmentos que combina información de todos los patrones y resume hacia qué deberia tender cada pixel.
 
 
-def main():
+def energy(W: ndarray, state: ndarray) -> float:
+    state = state.reshape(-1, 1)  # Asegurar que es un vector columna
+    E = -0.5 * np.dot(state.T, np.dot(W, state))
+    return E.flatten()[0]
+
+
+def main(config=None) -> tuple[HopfieldNetwork, ndarray, ndarray, list[ndarray], list[float]]:
+    if config is None:
+        config = {}
+
+    stored_patterns:list[str]|None = config["stored_patterns"] or None
+    noise_scale:float = config["noise_scale"] or 1.0
+    query_pattern_idx = config["query_pattern_idx"] or 0
+
     print("MODELO DE HOPFIELD - PASOS 1 y 2: Carga y Matriz de Pesos")
     print("="*70)
 
@@ -119,7 +132,7 @@ def main():
     print("\n" + "="*50)
     print("PASO 1: CARGANDO PATRONES")
     print("="*50)
-    hopfield.load_stored_patterns()
+    hopfield.load_stored_patterns(selected_patterns=stored_patterns)
     hopfield.show_all_patterns()
 
     # PASO 2: Calcular matriz de pesos W
@@ -132,8 +145,8 @@ def main():
     hopfield.show_complete_weight_matrix()
 
     # PASO 3: Iteración hasta convergencia
-    pattern = hopfield.patterns[1]
-    query_pattern = np.array(pattern) + np.random.normal(0, 1, pattern.shape) # simular un patrón parcialmente dañado para verificar la recuperación
+    pattern = hopfield.patterns[query_pattern_idx]
+    query_pattern: ndarray = np.sign(np.array(pattern) + np.random.normal(0, noise_scale, pattern.shape)) # simular un patrón parcialmente dañado para verificar la recuperación
 
     crosstalk = hopfield.crosstalk(query_pattern) # toma un patrón de consulta y lo compara con los patrones almacenados para estimar hacia cuál debería converger
     print("\n" + "="*50)                        #devuelvo un vector de 25 elmentos que combina información de todos los patrones y resume hacia qué deberia tender cada pixel
@@ -145,10 +158,19 @@ def main():
     print("Iteraciones: ", len(states))
     print("Patrón de consulta (original sin ruido):")
     PatternLoader().visualize_pattern(pattern)
+    print("Patrón de consulta (original + ruido):")
+    PatternLoader().visualize_pattern(query_pattern)
     print("Estado final:")
     PatternLoader().visualize_pattern(states[-1].flatten())
 
-    return hopfield
+    print("\n" + "="*50)
+    print("Energía:")
+    for i,s in enumerate(states):
+        print(f"S{i}: H(w) = {energy(W, s)}")
+
+    energies = [energy(W, s) for s in states]
+
+    return hopfield, query_pattern, crosstalk, states, energies
 
 if __name__ == "__main__":
     network = main()

@@ -1,0 +1,10 @@
+{
+  "stored_patterns": [
+    "a.txt",
+    "t.txt",
+    "x.txt",
+    "j.txt"
+  ],
+  "noise_scale": 2.0,
+  "query_pattern_idx": 0
+}
