@@ -1,0 +1,12 @@
+{
+  "learning_rate": 0.005,
+  "optimizer": "adam",
+  "activation": "tanh",
+  "encoder_layers": [35, 30, 20, 10, 2],
+  "decoder_layers": [2, 10, 20, 30, 35],
+  "epochs": 10000,
+  "epsilon": 1e-6,
+  "batch_size": null,
+  "seed": 42
+}
+
