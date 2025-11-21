@@ -7,6 +7,7 @@
   "epochs": 10000,
   "epsilon": 1e-6,
   "batch_size": null,
-  "seed": 42
+  "seed": 42,
+  "noise_std": 0.4
 }
 
