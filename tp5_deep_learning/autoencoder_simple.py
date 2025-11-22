@@ -68,24 +68,24 @@ class AutoencoderSimple:
     def compute_loss(self, X, X_reconstructed):
         return np.mean((X - X_reconstructed) ** 2)
     
-    def train(self, X, epochs=10000, epsilon=1e-5, verbose=True):
+    def train(self, X, epochs=10000, epsilon=1e-5, verbose=True): #X es la matriz de 32 x 35 
         n_samples = X.shape[0]
         effective_batch_size = n_samples if self.mlp.batch_size is None else self.mlp.batch_size
         
         for epoch in range(epochs):
             # Shuffle de los datos
             indices = np.random.permutation(n_samples)
-            X_shuffled = X[indices]
+            X_shuffled = X[indices] #Mezclo las filas 
             
             epoch_loss = 0
             n_batches = 0
             
-            for start_idx in range(0, n_samples, effective_batch_size):
+            for start_idx in range(0, n_samples, effective_batch_size): #Con batch_size=None, procesa todos los 32 caracteres juntos
                 end_idx = min(start_idx + effective_batch_size, n_samples)
                 X_batch = X_shuffled[start_idx:end_idx]
                 
                 # Forward pass completo
-                activations = self.mlp.forward(X_batch)
+                activations = self.mlp.forward(X_batch) # Le paso los 32 caracteres por batch=null
                 X_reconstructed = activations[-1]
                 
                 # Calcular pérdida

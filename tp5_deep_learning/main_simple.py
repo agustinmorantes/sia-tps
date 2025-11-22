@@ -29,9 +29,9 @@ def plot_loss_history(autoencoder):
     plt.show()
 
 def plot_reconstructions(autoencoder, X, original_chars, n_samples=8):
-    indices = np.random.choice(len(X), n_samples, replace=False)
+    indices = np.random.choice(len(X), n_samples, replace=False) #selecciona 8 índices aleatorios de los 32 caracteres
     
-    fig, axes = plt.subplots(2, n_samples, figsize=(2*n_samples, 4))
+    fig, axes = plt.subplots(2, n_samples, figsize=(2*n_samples, 4)) 
     
     for i, idx in enumerate(indices):
         original = X[idx].reshape(7, 5)

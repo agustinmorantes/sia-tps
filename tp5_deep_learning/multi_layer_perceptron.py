@@ -33,26 +33,26 @@ class MultiLayerPerceptron:
         self.batch_size = batch_size
         self.n_layers = len(layer_sizes) - 1
 
-        self.weights = [np.random.uniform(-0.5, 0.5, (layer_sizes[i], layer_sizes[i+1])) for i in range(self.n_layers)]
-        self.biases = [np.random.uniform(-0.5, 0.5, (1, layer_sizes[i+1])) for i in range(self.n_layers)]
+        self.weights = [np.random.uniform(-0.5, 0.5, (layer_sizes[i], layer_sizes[i+1])) for i in range(self.n_layers)] #Hacemos Fully connected 
+        self.biases = [np.random.uniform(-0.5, 0.5, (1, layer_sizes[i+1])) for i in range(self.n_layers)] #Un vector de bias por cada capa
 
-        self.deltaW_prev = [np.zeros_like(w) for w in self.weights]
+        self.deltaW_prev = [np.zeros_like(w) for w in self.weights] #Para momentum
         self.deltaB_prev = [np.zeros_like(b) for b in self.biases]
 
-        self.m_w = [np.zeros_like(w) for w in self.weights]
+        self.m_w = [np.zeros_like(w) for w in self.weights]  # 1era estimacion para Adam
         self.v_w = [np.zeros_like(w) for w in self.weights]
         self.m_b = [np.zeros_like(b) for b in self.biases]
-        self.v_b = [np.zeros_like(b) for b in self.biases]
+        self.v_b = [np.zeros_like(b) for b in self.biases]  #
         self.t = 0
         self.loss_history = []
 
     def forward(self, X):
         activations = [X]
         for i in range(self.n_layers):
-            z = np.dot(activations[-1], self.weights[i]) + self.biases[i]
-            a = self.activation.fn(z)
+            z = np.dot(activations[-1], self.weights[i]) + self.biases[i] #V_j^1 = θ(Σ_{k=1} x_k^μ . w_jk^1)
+            a = self.activation.fn(z) #le aplico la funcion de activacion a la salida de la capa i
             activations.append(a)
-        return activations
+        return activations #devuelve una lista de activaciones de cada capa
 
     def backward(self, activations, Y):   
         deltas = [] #lista de deltas ,cada delya es una lista de  errores de cada neurona de cada capa 
@@ -96,9 +96,9 @@ class MultiLayerPerceptron:
                 v_hat_b = self.v_b[i] / (1 - beta2**self.t)
                 self.biases[i] -= self.eta * m_hat_b / (np.sqrt(v_hat_b) + eps)
 
-    def train(self, X, Y, epochs=10000, epsilon=1e-5): #X es una matriz con 10 filas y 35 columnas donde cada  fila representa un digito (0-9) 
+    def train(self, X, Y, epochs=10000, epsilon=1e-5):  
         n_samples = X.shape[0]
-        effective_batch_size = n_samples if self.batch_size is None else self.batch_size #Y es una matriz con 10 filas y 1 columna,donde cada fila es 1 o -1
+        effective_batch_size = n_samples if self.batch_size is None else self.batch_size #Tamaño real del batch usado=32
 
         for epoch in range(epochs):
             indices = np.random.permutation(n_samples)
@@ -114,7 +114,7 @@ class MultiLayerPerceptron:
                 self.update_weights(activations, deltas)
                 batch_mse = 0.5 * np.mean((Y_batch - activations[-1])**2)
                 epoch_mse += batch_mse
-                n_batches += 1
+                n_batches += 1  #si batch_size = None, n_batches siempre es 1
 
             epoch_mse /= n_batches
             self.loss_history.append(epoch_mse)
