@@ -1,0 +1,16 @@
+{
+  "activation": "tanh",
+  "optimizer": "adam",
+  "seed": 42,
+  "epsilon": 1e-6,
+  "vae_learning_rate": 0.005,
+  "vae_h1": 64,
+  "vae_h2": 32,
+  "vae_latent_dim": 2,
+  "vae_beta": 1.0,
+  "vae_epochs": 3000,
+  "vae_batch_size": null,
+  "icons_dir": "../resources/icons",
+  "results_dir": "results",
+  "noise_levels": [0.2, 0.4, 0.6]
+}
