@@ -32,7 +32,7 @@ def load_icons(icons_dir='../resources/icons'):
     print(f"Cargados {len(icon_files)} iconos de tamaño {image_shape}")
     print(f"Forma de los datos: {X.shape}")
     
-    return X, icon_images, image_shape
+    return X, icon_images, image_shape #Retorna matriz X con todas las imágenes
 
 
 def add_noise(X, noise_std=0.3):
@@ -152,9 +152,9 @@ def visualize_latent_space(vae, X, results_dir='results'):
     """
     Visualiza la distribución de los datos en el espacio latente 2D.
     """
-    mu = vae.get_latent_representation(X)
-    
-    plt.figure(figsize=(8, 6))
+    mu = vae.get_latent_representation(X) #devuelve la media para cada icono 
+     
+    plt.figure(figsize=(8, 6)) 
     plt.scatter(mu[:, 0], mu[:, 1], s=100, alpha=0.7, edgecolors='black')
     
     # Etiquetar cada punto con su índice

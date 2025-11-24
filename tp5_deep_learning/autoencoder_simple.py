@@ -125,7 +125,7 @@ class AutoencoderSimple:
             Z = Z.reshape(1, -1)
         return self.decode(Z)
     
-    def interpolate(self, X1, X2, n_steps=10):
+    def interpolate(self, X1, X2, n_steps=10): #Se hace una interpolación lineal entre los dos puntos en el espacio latente y luego se decodifica ese punto intermedio
         # Asegurar que sean matrices 2D
         if X1.ndim == 1:
             X1 = X1.reshape(1, -1)
@@ -148,22 +148,4 @@ class AutoencoderSimple:
             interpolated_chars.append(char[0] if char.ndim == 2 else char)
         
         return np.array(interpolated_chars)
-    
-    def sample_latent_space(self, n_samples=10, z_range=None):
-        if z_range is None:
-            # Si no se especifica, usar rango típico para tanh/sigmoid: [-1, 1] o [0, 1]
-            z_range = [(-1, 1), (-1, 1)]  # Para tanh
-        
-        generated_chars = []
-        for _ in range(n_samples):
-            # Muestrear punto aleatorio en el espacio latente
-            Z = np.array([
-                np.random.uniform(z_range[0][0], z_range[0][1]),
-                np.random.uniform(z_range[1][0], z_range[1][1])
-            ]).reshape(1, -1)
-            
-            char = self.generate_from_latent(Z)
-            generated_chars.append(char[0] if char.ndim == 2 else char)
-        
-        return np.array(generated_chars)
 

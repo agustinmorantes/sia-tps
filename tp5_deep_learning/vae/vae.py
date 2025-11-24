@@ -131,20 +131,20 @@ class VariationalAutoencoder(AutoencoderSimple):
             activations.append(a)
         return activations  # última activación es h(x)
 
-    def encode(self, X):
+    def encode(self, X): #En lugar de producir un punto fijo Z, el encoder produce parámetros de una distribución:
         """
-        Encoder completo: X -> h(X) -> mu(X), logvar(X)
+        Encoder completo: X -> h(X) -> mu(X), logvar(X)image.png
         """
         activations = self.encoder_forward(X)
         h = activations[-1]
 
-        mu = np.dot(h, self.W_mu) + self.b_mu
+        mu = np.dot(h, self.W_mu) + self.b_mu             #h: última activación del encoder ,W_mu: matriz de pesos para calcular μ ,b_mu: vector de bias para μ , + self.b_mu: suma del bias
         logvar = np.dot(h, self.W_logvar) + self.b_logvar
 
         return mu, logvar, activations
 
     @staticmethod
-    def reparameterize(mu, logvar):
+    def reparameterize(mu, logvar): #Z se obtiene al azar pero si hay azar en el medio, la red no puede aprender correctamente,la retropropagación no puede pasar por una operación aleatoria
         """
         Trick de reparametrización:
             z = mu + eps * exp(0.5 * logvar)
