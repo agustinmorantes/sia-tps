@@ -275,7 +275,7 @@ def interpolate_between_icons(vae, X, image_shape, results_dir='results', idx1=0
     plt.close()  # plt.show()
 
 
-def visualize_latent_grid(vae, X_original, image_shape, results_dir='results', grid_size=15, x_range=(-3, 3), y_range=(-3, 3)):
+def visualize_latent_grid(vae, X_original, image_shape, results_dir='results', grid_size=15, x_range=(-3, 3), y_range=(-3, 3), name='vae_latent_grid'):
     """
     Visualiza una grilla de muestras generadas explorando el espacio latente 2D.
     Marca los puntos correspondientes a los íconos originales.
@@ -288,6 +288,7 @@ def visualize_latent_grid(vae, X_original, image_shape, results_dir='results', g
         grid_size: Tamaño de la grilla
         x_range: Rango para z₁
         y_range: Rango para z₂
+        name: Nombre del archivo de salida
     """
     if vae.latent_dim != 2:
         print(f"  La visualización de grilla requiere espacio latente 2D (actual: {vae.latent_dim}D)")
@@ -414,7 +415,7 @@ def visualize_latent_grid(vae, X_original, image_shape, results_dir='results', g
     fig.suptitle('Grilla de muestras generadas en el espacio latente del VAE',
                 fontsize=16, weight='bold', y=0.98)
 
-    output_path = os.path.join(results_dir, 'vae_latent_grid.png')
+    output_path = os.path.join(results_dir, f"{name}.png")
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
     print(f"Grilla del espacio latente guardada en '{output_path}'")
     print(f"  Íconos originales marcados en la grilla:")
@@ -535,6 +536,16 @@ def main():
         y_range = (-2, 2)
         visualize_latent_grid(vae, X, image_shape, results_dir, grid_size=grid_size,
                             x_range=x_range, y_range=y_range)
+    else:
+        print(f"  La grilla requiere espacio latente 2D (actual: {latent_dim}D)")
+
+    print("\n6. Grilla del espacio latente...")
+    if latent_dim == 2:
+        grid_size = 15
+        x_range = (-5, 5)
+        y_range = (-5, 5)
+        visualize_latent_grid(vae, X, image_shape, results_dir, grid_size=grid_size,
+                              x_range=x_range, y_range=y_range, name='vae_latent_grid_wide')
     else:
         print(f"  La grilla requiere espacio latente 2D (actual: {latent_dim}D)")
 

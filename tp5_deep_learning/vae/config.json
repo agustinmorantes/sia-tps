@@ -8,7 +8,7 @@
   "vae_h2": 32,
   "vae_latent_dim": 2,
   "vae_beta": 1.0,
-  "vae_epochs": 50000,
+  "vae_epochs": 10000,
   "vae_batch_size": null,
   "icons_dir": "../resources/icons",
   "results_dir": "results",
