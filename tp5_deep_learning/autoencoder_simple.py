@@ -119,4 +119,51 @@ class AutoencoderSimple:
     
     def get_latent_representation(self, X):
         return self.encode(X)
+    
+    def generate_from_latent(self, Z):
+        if Z.ndim == 1:
+            Z = Z.reshape(1, -1)
+        return self.decode(Z)
+    
+    def interpolate(self, X1, X2, n_steps=10):
+        # Asegurar que sean matrices 2D
+        if X1.ndim == 1:
+            X1 = X1.reshape(1, -1)
+        if X2.ndim == 1:
+            X2 = X2.reshape(1, -1)
+        
+        # Obtener representaciones latentes
+        Z1 = self.encode(X1)
+        Z2 = self.encode(X2)
+        
+        # Interpolar en el espacio latente
+        alphas = np.linspace(0, 1, n_steps + 2)  # Incluye los extremos
+        interpolated_chars = []
+        
+        for alpha in alphas:
+            # Interpolación lineal en el espacio latente
+            Z_interp = (1 - alpha) * Z1 + alpha * Z2
+            # Decodificar para generar el carácter
+            char = self.generate_from_latent(Z_interp)
+            interpolated_chars.append(char[0] if char.ndim == 2 else char)
+        
+        return np.array(interpolated_chars)
+    
+    def sample_latent_space(self, n_samples=10, z_range=None):
+        if z_range is None:
+            # Si no se especifica, usar rango típico para tanh/sigmoid: [-1, 1] o [0, 1]
+            z_range = [(-1, 1), (-1, 1)]  # Para tanh
+        
+        generated_chars = []
+        for _ in range(n_samples):
+            # Muestrear punto aleatorio en el espacio latente
+            Z = np.array([
+                np.random.uniform(z_range[0][0], z_range[0][1]),
+                np.random.uniform(z_range[1][0], z_range[1][1])
+            ]).reshape(1, -1)
+            
+            char = self.generate_from_latent(Z)
+            generated_chars.append(char[0] if char.ndim == 2 else char)
+        
+        return np.array(generated_chars)
 

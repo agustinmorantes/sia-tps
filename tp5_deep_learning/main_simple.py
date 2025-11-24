@@ -102,6 +102,41 @@ def plot_all_reconstructions(autoencoder, X, original_chars):
     print("Todas las reconstrucciones guardadas en 'simple_all_reconstructions.png'")
     plt.show()
 
+def plot_interpolation(autoencoder, X, original_chars, idx1=0, idx2=1, n_steps=8):
+    char1 = X[idx1:idx1+1]
+    char2 = X[idx2:idx2+1]
+    
+    # Obtener etiquetas
+    ascii_val1 = 0x60 + idx1
+    ascii_val2 = 0x60 + idx2
+    label1 = chr(ascii_val1) if ascii_val1 < 0x7f else 'DEL'
+    label2 = chr(ascii_val2) if ascii_val2 < 0x7f else 'DEL'
+    
+    # Interpolar
+    interpolated = autoencoder.interpolate(char1, char2, n_steps=n_steps)
+    
+    # Visualizar
+    fig, axes = plt.subplots(1, len(interpolated), figsize=(2*len(interpolated), 2))
+    
+    for i, char in enumerate(interpolated):
+        char_img = char.reshape(7, 5)
+        axes[i].imshow(char_img, cmap='binary', vmin=0, vmax=1, interpolation='nearest')
+        if i == 0:
+            axes[i].set_title(f"'{label1}'", fontweight='bold')
+        elif i == len(interpolated) - 1:
+            axes[i].set_title(f"'{label2}'", fontweight='bold')
+        else:
+            alpha = i / (len(interpolated) - 1)
+            axes[i].set_title(f"α={alpha:.2f}", fontsize=9)
+        axes[i].axis('off')
+    
+    plt.suptitle(f"Interpolación entre '{label1}' y '{label2}' en el espacio latente", 
+                fontsize=12, fontweight='bold')
+    plt.tight_layout()
+    plt.savefig('results/simple_interpolation.png', dpi=150, bbox_inches='tight')
+    print(f"Interpolación guardada en 'simple_interpolation.png'")
+    plt.show()
+
 def plot_latent_space(autoencoder, X, original_chars):
     Z = autoencoder.get_latent_representation(X)
     
@@ -156,7 +191,6 @@ def main():
     print("Cargando configuración...")
     try:
         config = load_config('config.json')
-        print("✓ Configuración cargada exitosamente")
     except FileNotFoundError as e:
         print(f"Error: {e}")
         print("Usando configuración por defecto...")
@@ -172,9 +206,8 @@ def main():
             "seed": 42
         }
     
-    print("\n" + "="*50)
-    print("CONFIGURACIÓN DEL AUTOENCODER (MLP ÚNICO)")
-    print("="*50)
+    print("\nCONFIGURACIÓN DEL AUTOENCODER\n")
+    
     print(f"Learning Rate: {config['learning_rate']}")
     print(f"Optimizador: {config['optimizer']}")
     print(f"Función de Activación: {config['activation']}")
@@ -183,14 +216,13 @@ def main():
     print(f"Arquitectura Completa: {config['encoder_layers'] + config['decoder_layers'][1:]}")
     print(f"Épocas: {config['epochs']}")
     print(f"Batch Size: {config.get('batch_size', 'Completo')}")
-    print(f"Seed: {config['seed']}")
-    print("="*50 + "\n")
+    print(f"Seed: {config['seed']}\n")
     
     print("Preparando datos...")
     X = prepare_data()
     print(f"Datos preparados: {X.shape} (32 caracteres, 35 características cada uno)")
     
-    print("\nCreando Autoencoder (MLP único)...")
+    print("\nCreando Autoencoder...")
     autoencoder = AutoencoderSimple(
         encoder_layers=config['encoder_layers'],
         decoder_layers=config['decoder_layers'],
@@ -214,6 +246,10 @@ def main():
     plot_reconstructions(autoencoder, X, font_3, n_samples=8)
     plot_all_reconstructions(autoencoder, X, font_3)
     plot_latent_space(autoencoder, X, font_3)
+    
+    # Generar nuevas letras interpolando en el espacio latente
+    plot_interpolation(autoencoder, X, font_3, idx1=0, idx2=15, n_steps=8)  # Interpolación entre '`' y 'o'
+    plot_interpolation(autoencoder, X, font_3, idx1=1, idx2=14, n_steps=8)  # Interpolación entre 'a' y 'n'
 
 if __name__ == "__main__":
     main()
