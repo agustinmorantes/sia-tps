@@ -41,6 +41,42 @@ def add_noise(X, noise_std=0.3):
     return X_noisy
 
 
+def visualize_original_icons(X, image_shape, results_dir='results'):
+    """
+    Visualiza todos los iconos originales antes del entrenamiento.
+    """
+    n_icons = X.shape[0]
+    n_cols = min(8, n_icons)
+    n_rows = (n_icons + n_cols - 1) // n_cols
+    
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(n_cols * 2, n_rows * 2))
+    if n_rows == 1:
+        axes = axes.reshape(1, -1)
+    if n_cols == 1:
+        axes = axes.reshape(-1, 1)
+    
+    for i in range(n_icons):
+        row = i // n_cols
+        col = i % n_cols
+        
+        img = X[i].reshape(image_shape[1], image_shape[0])
+        axes[row, col].imshow(img, cmap='gray', vmin=0, vmax=1)
+        axes[row, col].axis('off')
+        axes[row, col].set_title(f'Icon {i+1}', fontsize=10)
+    
+    # Ocultar ejes sobrantes
+    for i in range(n_icons, n_rows * n_cols):
+        row = i // n_cols
+        col = i % n_cols
+        axes[row, col].axis('off')
+    
+    plt.tight_layout()
+    output_path = os.path.join(results_dir, 'original_icons.png')
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    print(f"Iconos originales guardados en '{output_path}'")
+    plt.close()
+
+
 def visualize_reconstructions(vae, X, image_shape, results_dir='results', n_samples=8):
     n_samples = min(n_samples, X.shape[0])
     X_sample = X[:n_samples]
@@ -67,7 +103,7 @@ def visualize_reconstructions(vae, X, image_shape, results_dir='results', n_samp
     output_path = os.path.join(results_dir, 'vae_reconstructions.png')
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
     print(f"Reconstrucciones guardadas en '{output_path}'")
-    plt.show()
+    plt.close()  # plt.show()
 
 
 def visualize_denoising(vae, X, image_shape, results_dir='results', noise_std=0.3, n_samples=8):
@@ -109,7 +145,7 @@ def visualize_denoising(vae, X, image_shape, results_dir='results', noise_std=0.
     output_path = os.path.join(results_dir, f'vae_denoising_std_{noise_std}.png')
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
     print(f"Denoising guardado en '{output_path}'")
-    plt.show()
+    plt.close()  # plt.show()
 
 
 def visualize_latent_space(vae, X, results_dir='results'):
@@ -134,7 +170,47 @@ def visualize_latent_space(vae, X, results_dir='results'):
     output_path = os.path.join(results_dir, 'vae_latent_space.png')
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
     print(f"Espacio latente guardado en '{output_path}'")
-    plt.show()
+    plt.close()  # plt.show()
+
+
+def visualize_manifold(vae, image_shape, results_dir='results', n_grid=15):
+    """
+    Visualiza el manifold muestreando un grid del espacio latente 2D.
+    Cada punto del grid se decodifica para ver qué genera el VAE.
+    """
+    # Crear un grid en el espacio latente
+    # Usar un rango que cubra la distribución normal estándar
+    grid_range = 3  # ±3 desviaciones estándar cubre ~99.7% de N(0,1)
+    grid_x = np.linspace(-grid_range, grid_range, n_grid)
+    grid_y = np.linspace(-grid_range, grid_range, n_grid)
+    
+    # Crear figura
+    figure = np.zeros((image_shape[1] * n_grid, image_shape[0] * n_grid))
+    
+    # Para cada punto del grid, decodificar
+    for i, yi in enumerate(grid_y):
+        for j, xi in enumerate(grid_x):
+            # Punto en el espacio latente
+            z_sample = np.array([[xi, yi]])
+            
+            # Decodificar usando el método decode del VAE
+            x_decoded, _ = vae.decode(z_sample)
+            
+            # Reshape y colocar en la figura
+            digit = x_decoded[0].reshape(image_shape[1], image_shape[0])
+            figure[i * image_shape[1]: (i + 1) * image_shape[1],
+                   j * image_shape[0]: (j + 1) * image_shape[0]] = digit
+    
+    # Visualizar
+    plt.figure(figsize=(12, 12))
+    plt.imshow(figure, cmap='gray', vmin=0, vmax=1)
+    plt.axis('off')
+    plt.title(f'Manifold del VAE - Grid {n_grid}x{n_grid} en espacio latente', fontsize=14)
+    plt.tight_layout()
+    output_path = os.path.join(results_dir, 'vae_manifold.png')
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    print(f"Manifold guardado en '{output_path}'")
+    plt.close()  # plt.show()
 
 
 def generate_new_samples(vae, image_shape, results_dir='results', n_samples=8):
@@ -169,7 +245,7 @@ def generate_new_samples(vae, image_shape, results_dir='results', n_samples=8):
     output_path = os.path.join(results_dir, 'vae_generated_samples.png')
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
     print(f"Muestras generadas guardadas en '{output_path}'")
-    plt.show()
+    plt.close()  # plt.show()
 
 
 def interpolate_between_icons(vae, X, image_shape, results_dir='results', idx1=0, idx2=1, n_steps=10):
@@ -196,7 +272,7 @@ def interpolate_between_icons(vae, X, image_shape, results_dir='results', idx1=0
     output_path = os.path.join(results_dir, f'vae_interpolation_{idx1+1}_to_{idx2+1}.png')
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
     print(f"Interpolación guardada en '{output_path}'")
-    plt.show()
+    plt.close()  # plt.show()
 
 
 def plot_training_history(vae, results_dir='results'):
@@ -214,7 +290,7 @@ def plot_training_history(vae, results_dir='results'):
     output_path = os.path.join(results_dir, 'vae_training_history.png')
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
     print(f"Historial de entrenamiento guardado en '{output_path}'")
-    plt.show()
+    plt.close()  # plt.show()
 
 
 def main():
@@ -278,6 +354,9 @@ def main():
     print("GENERANDO VISUALIZACIONES")
     print("=" * 60)
     
+    print("\n0. Iconos originales...")
+    visualize_original_icons(X, image_shape, results_dir)
+    
     print("\n1. Historial de entrenamiento...")
     plot_training_history(vae, results_dir)
     
@@ -286,7 +365,7 @@ def main():
     
     print("\n3. Denoising (Capacidad Generativa)...")
     # Probar con diferentes niveles de ruido
-    noise_levels = config.get('noise_levels', [0.2, 0.4, 0.6])
+    noise_levels = config.get('noise_levels', [0.2, 0.8, 0.9])
     for noise_std in noise_levels:
         print(f"   - Ruido σ={noise_std}")
         visualize_denoising(vae, X, image_shape, results_dir, noise_std=noise_std, n_samples=min(8, len(X)))
@@ -294,6 +373,8 @@ def main():
     print("\n4. Espacio latente...")
     if latent_dim == 2:
         visualize_latent_space(vae, X, results_dir)
+        print("\n4b. Manifold del espacio latente...")
+        visualize_manifold(vae, image_shape, results_dir, n_grid=15)
     else:
         print(f"  Espacio latente tiene dimensión {latent_dim}, se necesita dimensión 2 para visualizar")
     

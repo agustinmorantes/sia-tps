@@ -8,9 +8,9 @@
   "vae_h2": 32,
   "vae_latent_dim": 2,
   "vae_beta": 1.0,
-  "vae_epochs": 3000,
+  "vae_epochs": 50000,
   "vae_batch_size": null,
   "icons_dir": "../resources/icons",
   "results_dir": "results",
-  "noise_levels": [0.2, 0.4, 0.6]
+  "noise_levels": [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 }
