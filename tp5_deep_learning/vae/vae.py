@@ -367,12 +367,39 @@ class VariationalAutoencoder(AutoencoderSimple):
             X_generated: Array de forma (n_samples, output_dim) con las muestras generadas
         """
         # Samplear desde la distribución previa estándar
-        z = np.random.normal(0, 1, (n_samples, self.latent_dim))
+        z = np.random.normal(0, 2, (n_samples, self.latent_dim))
         
         # Pasar por el decoder
         X_generated, _ = self.decode(z)
         
         return X_generated
+    
+    def generate_grid(self, x_samples=10, y_samples=10, x_range=(-2, 2), y_range=(-2, 2)):
+        """
+        Genera una cuadrícula de muestras en el espacio latente 2D.
+        Útil para visualizar cómo el VAE mapea el espacio latente a datos.
+
+        Args:
+            x_samples: Número de muestras en la dimensión x (columnas)
+            y_samples: Número de muestras en la dimensión y (filas)
+            x_range: Tupla (min, max) para la dimensión x
+            y_range: Tupla (min, max) para la dimensión y
+
+        Returns:
+            X_grid: Array de forma (y_samples * x_samples, output_dim) con las muestras generadas
+                   Ordenado por filas (y) y luego columnas (x) para visualización matricial
+        """
+        if self.latent_dim != 2:
+            raise ValueError("El método generate_grid solo es aplicable para espacio latente 2D.")
+
+        x_values = np.linspace(x_range[0], x_range[1], x_samples)
+        y_values = np.linspace(y_range[1], y_range[0], y_samples)
+
+        z_grid = np.array([[x, y] for y in y_values for x in x_values])
+
+        X_grid, _ = self.decode(z_grid)
+
+        return X_grid
     
     def interpolate(self, X1, X2, n_steps=10):
         """

@@ -275,6 +275,156 @@ def interpolate_between_icons(vae, X, image_shape, results_dir='results', idx1=0
     plt.close()  # plt.show()
 
 
+def visualize_latent_grid(vae, X_original, image_shape, results_dir='results', grid_size=15, x_range=(-3, 3), y_range=(-3, 3)):
+    """
+    Visualiza una grilla de muestras generadas explorando el espacio latente 2D.
+    Marca los puntos correspondientes a los íconos originales.
+
+    Args:
+        vae: Modelo VAE entrenado
+        X_original: Datos originales para obtener sus representaciones latentes
+        image_shape: Forma de las imágenes (width, height)
+        results_dir: Directorio para guardar resultados
+        grid_size: Tamaño de la grilla
+        x_range: Rango para z₁
+        y_range: Rango para z₂
+    """
+    if vae.latent_dim != 2:
+        print(f"  La visualización de grilla requiere espacio latente 2D (actual: {vae.latent_dim}D)")
+        return
+
+    # Obtener las representaciones latentes de los íconos originales
+    mu_original = vae.get_latent_representation(X_original)
+
+    # Generar grilla (ya viene ordenada por filas y columnas)
+    X_grid = vae.generate_grid(x_samples=grid_size, y_samples=grid_size,
+                               x_range=x_range, y_range=y_range)
+
+    # Valores de las dimensiones latentes
+    x_values = np.linspace(x_range[0], x_range[1], grid_size)
+    y_values = np.linspace(y_range[1], y_range[0], grid_size)  # De max a min (top to bottom)
+
+    # Crear figura con GridSpec para mejor control del layout
+    from matplotlib.gridspec import GridSpec
+
+    fig = plt.figure(figsize=(14, 14))
+    gs = GridSpec(grid_size + 2, grid_size + 2, figure=fig,
+                  left=0.08, right=0.98, top=0.95, bottom=0.05,
+                  hspace=0.02, wspace=0.02)
+
+    # Crear grilla de imágenes (dejando espacio para ejes)
+    # Guardar referencias a los axes para agregar marcadores después
+    axes_grid = {}  # (i, j) -> ax
+
+    for i in range(grid_size):  # i = fila (índice y)
+        for j in range(grid_size):  # j = columna (índice x)
+            ax = fig.add_subplot(gs[i+1, j+1])  # +1 para dejar espacio para labels
+
+            idx = i * grid_size + j  # Índice en el array X_grid
+            img = X_grid[idx].reshape(image_shape[1], image_shape[0])
+            ax.imshow(img, cmap='gray', vmin=0, vmax=1)
+            ax.axis('off')
+
+            # Guardar referencia al axes
+            axes_grid[(i, j)] = ax
+
+    # Agregar etiquetas del eje X (z₁) arriba
+    for j in range(grid_size):
+        ax = fig.add_subplot(gs[0, j+1])
+        ax.text(0.5, 0.5, f'{x_values[j]:.1f}',
+               ha='center', va='center', fontsize=9, weight='bold')
+        ax.axis('off')
+
+    # Agregar etiquetas del eje Y (z₂) a la izquierda
+    for i in range(grid_size):
+        ax = fig.add_subplot(gs[i+1, 0])
+        ax.text(0.5, 0.5, f'{y_values[i]:.1f}',
+               ha='center', va='center', fontsize=9, weight='bold')
+        ax.axis('off')
+
+    # Título del eje X
+    ax_title_x = fig.add_subplot(gs[grid_size+1, 1:grid_size+1])
+    ax_title_x.text(0.5, 0.5, 'z₁ (Dimensión latente 1)',
+                   ha='center', va='center', fontsize=13, weight='bold')
+    ax_title_x.axis('off')
+
+    # Título del eje Y (vertical)
+    ax_title_y = fig.add_subplot(gs[1:grid_size+1, grid_size+1])
+    ax_title_y.text(0.5, 0.5, 'z₂ (Dimensión latente 2)',
+                   ha='center', va='center', fontsize=13, weight='bold',
+                   rotation=-90)
+    ax_title_y.axis('off')
+
+    # Marcar los puntos correspondientes a los íconos originales
+    # Encontrar las celdas más cercanas a cada punto latente original
+    # Crear un diccionario para agrupar íconos que caen en la misma celda
+    cell_icons = {}  # (i, j) -> [lista de índices de íconos]
+
+    for icon_idx in range(len(mu_original)):
+        z_point = mu_original[icon_idx]  # (z1, z2)
+
+        # Encontrar la celda más cercana en la grilla
+        dist_x = np.abs(x_values - z_point[0])
+        dist_y = np.abs(y_values - z_point[1])
+
+        # Índices de la celda más cercana
+        j_closest = np.argmin(dist_x)  # columna
+        i_closest = np.argmin(dist_y)  # fila
+
+        # Agregar al diccionario
+        cell_key = (i_closest, j_closest)
+        if cell_key not in cell_icons:
+            cell_icons[cell_key] = []
+        cell_icons[cell_key].append(icon_idx)
+
+    # Marcar las celdas con los íconos
+    colors = ['red', 'blue', 'green', 'orange', 'purple', 'cyan', 'magenta', 'yellow']
+
+    for (i_cell, j_cell), icon_list in cell_icons.items():
+        # Obtener el axes correspondiente a esta celda (ya existente)
+        ax = axes_grid[(i_cell, j_cell)]
+
+        # Si hay un solo ícono, usar su color específico
+        # Si hay múltiples, usar un color mixto o mostrar todos
+        if len(icon_list) == 1:
+            color = colors[icon_list[0] % len(colors)]
+            label_text = f'{icon_list[0]+1}'
+        else:
+            # Múltiples íconos en la misma celda
+            color = 'black'
+            label_text = ','.join([str(idx+1) for idx in icon_list])
+
+        # Agregar un rectángulo de borde alrededor de la imagen
+        from matplotlib.patches import Rectangle
+        rect = Rectangle((0, 0), 1, 1, linewidth=4, edgecolor=color,
+                        facecolor='none', transform=ax.transAxes, zorder=10)
+        ax.add_patch(rect)
+
+        # Agregar etiqueta dentro de la imagen (esquina superior izquierda)
+        # Posición dentro del axes para que sea visible
+        ax.text(0.15, 0.85, label_text, transform=ax.transAxes,
+               ha='center', va='center',
+               fontsize=10 if len(label_text) < 4 else 8,
+               weight='bold', color='black',
+               bbox=dict(boxstyle='round,pad=0.4', facecolor='yellow',
+                        edgecolor='black', linewidth=2, alpha=0.95),
+               zorder=11)
+
+    # Título principal
+    fig.suptitle('Grilla de muestras generadas en el espacio latente del VAE',
+                fontsize=16, weight='bold', y=0.98)
+
+    output_path = os.path.join(results_dir, 'vae_latent_grid.png')
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    print(f"Grilla del espacio latente guardada en '{output_path}'")
+    print(f"  Íconos originales marcados en la grilla:")
+    for (i, j), icons in sorted(cell_icons.items()):
+        z_approx = (x_values[j], y_values[i])
+        icon_str = ', '.join([f'{idx+1}' for idx in icons])
+        print(f"    Celda [{i},{j}] (z≈{z_approx[0]:.1f}, {z_approx[1]:.1f}): íconos {icon_str}")
+    plt.show()
+
+
 def plot_training_history(vae, results_dir='results'):
     """
     Grafica la evolución de la pérdida durante el entrenamiento.
@@ -378,10 +528,20 @@ def main():
     else:
         print(f"  Espacio latente tiene dimensión {latent_dim}, se necesita dimensión 2 para visualizar")
     
-    print("\n5. Muestras generadas...")
+    print("\n5. Grilla del espacio latente...")
+    if latent_dim == 2:
+        grid_size = 10
+        x_range = (-2, 2)
+        y_range = (-2, 2)
+        visualize_latent_grid(vae, X, image_shape, results_dir, grid_size=grid_size,
+                            x_range=x_range, y_range=y_range)
+    else:
+        print(f"  La grilla requiere espacio latente 2D (actual: {latent_dim}D)")
+
+    print("\n6. Muestras generadas...")
     generate_new_samples(vae, image_shape, results_dir, n_samples=8)
     
-    print("\n6. Interpolaciones...")
+    print("\n7. Interpolaciones...")
     if len(X) >= 2:
         interpolate_between_icons(vae, X, image_shape, results_dir, idx1=0, idx2=1, n_steps=10)
         if len(X) >= 4:
