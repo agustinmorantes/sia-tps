@@ -33,7 +33,7 @@ class MultiLayerPerceptron:
         self.batch_size = batch_size
         self.n_layers = len(layer_sizes) - 1
 
-        self.weights = [np.random.uniform(-0.5, 0.5, (layer_sizes[i], layer_sizes[i+1])) for i in range(self.n_layers)] #Hacemos Fully connected 
+        self.weights = [np.random.uniform(-0.5, 0.5, (layer_sizes[i], layer_sizes[i+1])) for i in range(self.n_layers)] #Hacemos Fully connected
         self.biases = [np.random.uniform(-0.5, 0.5, (1, layer_sizes[i+1])) for i in range(self.n_layers)] #Un vector de bias por cada capa
 
         self.deltaW_prev = [np.zeros_like(w) for w in self.weights] #Para momentum

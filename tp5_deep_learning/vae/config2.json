@@ -6,6 +6,7 @@
   "vae_learning_rate": 0.001,
   "vae_h1": 64,
   "vae_h2": 32,
+  "vae_h3": 16,
   "vae_latent_dim": 2,
   "vae_beta": 1.0,
   "vae_epochs": 10000,

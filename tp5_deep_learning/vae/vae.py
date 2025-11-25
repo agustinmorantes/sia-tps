@@ -113,6 +113,8 @@ class VariationalAutoencoder(AutoencoderSimple):
         )
 
         self.loss_history = []
+        self.recon_loss_history = []
+        self.kl_loss_history = []
 
     # =====================================================
     #                   FORWARD PASS
@@ -228,7 +230,9 @@ class VariationalAutoencoder(AutoencoderSimple):
             # -------------------------
             total_loss, recon_loss, kl_loss = self.compute_losses(X, X_recon, mu, logvar)
             self.loss_history.append(total_loss)
-            
+            self.recon_loss_history.append(recon_loss)
+            self.kl_loss_history.append(kl_loss)
+
             # Validación si se proporcionan datos
             if X_val is not None:
                 X_val_recon, mu_val, logvar_val, _, _, _, _, _ = self.forward(X_val)

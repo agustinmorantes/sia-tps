@@ -433,8 +433,9 @@ def plot_training_history(vae, results_dir='results'):
     plt.figure(figsize=(10, 6))
     plt.plot(vae.loss_history, label='Pérdida total')
     plt.xlabel('Época')
-    plt.ylabel('Pérdida')
+    plt.ylabel('Pérdida (MSE)')
     plt.title('Evolución del entrenamiento del VAE')
+    plt.ylim(0, 5)  # Fijar el rango del eje y entre 0 y 5
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
@@ -443,13 +444,16 @@ def plot_training_history(vae, results_dir='results'):
     print(f"Historial de entrenamiento guardado en '{output_path}'")
     plt.close()  # plt.show()
 
-
 def main():
     # Obtener el directorio del script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     
     # Cargar configuración
-    config_path = os.path.join(script_dir, 'config.json')
+    if len(sys.argv) < 2:
+        config_path = os.path.join(script_dir, 'config.json')
+    else:
+        config_path = sys.argv[1]
+
     with open(config_path, 'r') as f:
         config = json.load(f)
     
@@ -468,11 +472,23 @@ def main():
     # Configurar arquitectura del VAE
     latent_dim = config.get('vae_latent_dim', 2)
     h1 = config.get('vae_h1', 64)
-    h2 = config.get('vae_h2', 32)
-    
-    encoder_layers = [input_dim, h1, h2, latent_dim]
-    decoder_layers = [latent_dim, h2, h1, input_dim]
-    
+    h2 = config.get('vae_h2', None)
+    h3 = config.get('vae_h3', None)
+    h4 = config.get('vae_h4', None)
+
+    if h2 is None:
+        encoder_layers = [input_dim, h1, latent_dim]
+        decoder_layers = [latent_dim, h1, input_dim]
+    elif h3 is None:
+        encoder_layers = [input_dim, h1, h2, latent_dim]
+        decoder_layers = [latent_dim, h2, h1, input_dim]
+    elif h4 is None:
+        encoder_layers = [input_dim, h1, h2, h3, latent_dim]
+        decoder_layers = [latent_dim, h3, h2, h1, input_dim]
+    else:
+        encoder_layers = [input_dim, h1, h2, h3, h4, latent_dim]
+        decoder_layers = [latent_dim, h4, h3, h2, h1, input_dim]
+
     print(f"\nArquitectura del VAE:")
     print(f"  Encoder: {encoder_layers}")
     print(f"  Decoder: {decoder_layers}")
