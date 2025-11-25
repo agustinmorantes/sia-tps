@@ -77,7 +77,7 @@ def visualize_original_icons(X, image_shape, results_dir='results'):
     plt.close()
 
 
-def visualize_reconstructions(vae, X, image_shape, results_dir='results', n_samples=8):
+def visualize_reconstructions(vae, X, image_shape, results_dir='results', n_samples=9):
     n_samples = min(n_samples, X.shape[0])
     X_sample = X[:n_samples]
     X_recon = vae.reconstruct(X_sample)
@@ -433,7 +433,7 @@ def plot_training_history(vae, results_dir='results'):
     plt.figure(figsize=(10, 6))
     plt.plot(vae.loss_history, label='Pérdida total')
     plt.xlabel('Época')
-    plt.ylabel('Pérdida (MSE)')
+    plt.ylabel('Pérdida total')
     plt.title('Evolución del entrenamiento del VAE')
     plt.ylim(0, 5)  # Fijar el rango del eje y entre 0 y 5
     plt.legend()
@@ -528,7 +528,7 @@ def main():
     plot_training_history(vae, results_dir)
     
     print("\n2. Reconstrucciones...")
-    visualize_reconstructions(vae, X, image_shape, results_dir, n_samples=min(8, len(X)))
+    visualize_reconstructions(vae, X, image_shape, results_dir, n_samples=min(9, len(X)))
     
     print("\n3. Denoising (Capacidad Generativa)...")
     # Probar con diferentes niveles de ruido
